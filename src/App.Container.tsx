@@ -13,7 +13,7 @@ type State = {
     parsedData: Data[]
     data: Data[][]
     selectedItemIDs: string[]
-    dragging?: { id: string, startX: number, handle?: "left" | "right" }
+    dragging?: { id: string, startX: number, handle?: "left" | "right", startDate?: Date }
 }
 
 export default class AppContainer extends Container(App)<{}, State> {
@@ -67,7 +67,7 @@ export default class AppContainer extends Container(App)<{}, State> {
                 this.setState({
                     cursorDate: addDays(this.state.cursorDate, 1)
                 }, this.updateSelectedItems)
-            } else  if (e.keyCode === 38) {
+            } else if (e.keyCode === 38) {
                 this.setState({
                     cursorRow: this.state.cursorRow - 1
                 }, this.updateSelectedItems)
@@ -79,12 +79,13 @@ export default class AppContainer extends Container(App)<{}, State> {
         }
     }
 
-    onDragStart = (e: React.DragEvent) => {
+    onMouseDown = (e: React.DragEvent) => {
         this.setState({
             dragging: {
                 id: (e.currentTarget as HTMLElement).dataset["itemid"],
                 handle: (e.target as HTMLElement).dataset["handle"] as any,
-                startX: e.clientX
+                startX: e.clientX,
+                startDate: new Date((e.currentTarget as HTMLElement).dataset["date"])
             }
         })
 
@@ -93,29 +94,48 @@ export default class AppContainer extends Container(App)<{}, State> {
     }
 
     onMouseMove = (e: MouseEvent) => {
-        const xDiff = ~~((e.clientX - this.state.dragging!.startX) / this.state.cellWidth)
+        const { parsedData } = this.state
+        const dragging = { ...this.state.dragging }
+        const xDiff = ~~((e.clientX - dragging!.startX) / this.state.cellWidth)
 
         if (xDiff !== 0) {
-            if (!this.state.dragging!.handle) {
-                const parsedData = moveItems([this.state.dragging!.id], xDiff, this.state.parsedData)
+            if (!dragging.id) {
+                const id = dragging.id = Math.random().toString(36)
+                dragging.handle = "right"
+                parsedData.push({
+                    id,
+                    start: dragging.startDate,
+                    end: addDays(dragging.startDate, 1),
+                    title: "BAZ",
+                    color: "pink",
+                })
                 this.setState({
-                    dragging: {
-                        ...this.state.dragging,
-                        startX: this.state.dragging!.startX + xDiff * this.state.cellWidth
-                    },
-                    parsedData,
+                    dragging,
+                    parsedData: parsedData,
                     data: buildData(parsedData),
                 })
             } else {
-                const parsedData = scaleItems([this.state.dragging!.id], xDiff, this.state.dragging!.handle, this.state.parsedData)
-                this.setState({
-                    dragging: {
-                        ...this.state.dragging,
-                        startX: this.state.dragging!.startX + xDiff * this.state.cellWidth
-                    },
-                    parsedData,
-                    data: buildData(parsedData),
-                })
+                if (!this.state.dragging.handle) {
+                    const newParsedData = moveItems([dragging.id], xDiff, parsedData)
+                    this.setState({
+                        dragging: {
+                            ...dragging,
+                            startX: dragging.startX + xDiff * this.state.cellWidth
+                        },
+                        parsedData: newParsedData,
+                        data: buildData(newParsedData),
+                    })
+                } else {
+                    const newParsedData = scaleItems([dragging.id], xDiff, dragging.handle, parsedData)
+                    this.setState({
+                        dragging: {
+                            ...dragging,
+                            startX: dragging.startX + xDiff * this.state.cellWidth
+                        },
+                        parsedData: newParsedData,
+                        data: buildData(newParsedData),
+                    })
+                }
             }
         }
     }
@@ -132,16 +152,15 @@ export default class AppContainer extends Container(App)<{}, State> {
     updateSelectedItems = () => {
         const items = this.state.data[this.state.cursorRow]
         const ids = items
-            .filter(item => isWithinInterval(this.state.cursorDate, { start: item.start, end: addDays(item.end, -1)}))
+            .filter(item => isWithinInterval(this.state.cursorDate, { start: item.start, end: addDays(item.end, -1) }))
             .map(item => item.id)
         this.setState({ selectedItemIDs: ids })
     }
 
-    getChildProps(props, state) {
+    getChildProps(_props, state) {
         return {
             ...state,
-            onDragStart: this.onDragStart,
-            onDragEnd: this.onDragStart,
+            onMouseDown: this.onMouseDown,
         }
     }
 }
@@ -162,7 +181,7 @@ function moveItems(ids: string[], amount: number, data: Data[]): Data[] {
     })
 }
 
-function scaleItems(ids: string[], amount: number, direction: "left" | "right", data: Data[]): Data[] {
+function scaleItems(ids: string[], amount: number, direction: "left" | "right", data: Data[]): Data[] {
     return data.slice().map(item => {
         if (ids.includes(item.id)) {
             return {
