@@ -3,10 +3,23 @@ import { parse, startOfWeek, addDays, compareAsc, isWithinInterval } from "date-
 import App from "./App"
 import data, { RawData, Data } from "./data"
 
-export default class AppContainer extends Container(App) {
-    state = {
+type State = {
+    startDate: Date
+    numDays: number
+    cellWidth: number
+    rowHeight: number
+    cursorDate: Date
+    cursorRow: number
+    parsedData: Data[]
+    data: Data[][]
+    selectedItemIDs: string[]
+    dragging?: { id: string, startX: number, handle?: "left" | "right" }
+}
+
+export default class AppContainer extends Container(App)<{}, State> {
+    state: State = {
         startDate: startOfWeek(new Date(), { weekStartsOn: 1 }),
-        numDays: 21,
+        numDays: 28,
         cellWidth: 0,
         rowHeight: 40,
         cursorDate: startOfWeek(new Date(), { weekStartsOn: 1 }),
@@ -66,6 +79,56 @@ export default class AppContainer extends Container(App) {
         }
     }
 
+    onDragStart = (e: React.DragEvent) => {
+        this.setState({
+            dragging: {
+                id: (e.currentTarget as HTMLElement).dataset["itemid"],
+                handle: (e.target as HTMLElement).dataset["handle"] as any,
+                startX: e.clientX
+            }
+        })
+
+        document.addEventListener("mousemove", this.onMouseMove)
+        document.addEventListener("mouseup", this.onMouseUp)
+    }
+
+    onMouseMove = (e: MouseEvent) => {
+        const xDiff = ~~((e.clientX - this.state.dragging!.startX) / this.state.cellWidth)
+
+        if (xDiff !== 0) {
+            if (!this.state.dragging!.handle) {
+                const parsedData = moveItems([this.state.dragging!.id], xDiff, this.state.parsedData)
+                this.setState({
+                    dragging: {
+                        ...this.state.dragging,
+                        startX: this.state.dragging!.startX + xDiff * this.state.cellWidth
+                    },
+                    parsedData,
+                    data: buildData(parsedData),
+                })
+            } else {
+                const parsedData = scaleItems([this.state.dragging!.id], xDiff, this.state.dragging!.handle, this.state.parsedData)
+                this.setState({
+                    dragging: {
+                        ...this.state.dragging,
+                        startX: this.state.dragging!.startX + xDiff * this.state.cellWidth
+                    },
+                    parsedData,
+                    data: buildData(parsedData),
+                })
+            }
+        }
+    }
+
+    onMouseUp = () => {
+        this.setState({
+            dragging: null,
+        })
+
+        document.removeEventListener("mousemove", this.onMouseMove)
+        document.removeEventListener("mouseup", this.onMouseUp)
+    }
+
     updateSelectedItems = () => {
         const items = this.state.data[this.state.cursorRow]
         const ids = items
@@ -74,6 +137,13 @@ export default class AppContainer extends Container(App) {
         this.setState({ selectedItemIDs: ids })
     }
 
+    getChildProps(props, state) {
+        return {
+            ...state,
+            onDragStart: this.onDragStart,
+            onDragEnd: this.onDragStart,
+        }
+    }
 }
 
 function moveItems(ids: string[], amount: number, data: Data[]): Data[] {
@@ -83,6 +153,22 @@ function moveItems(ids: string[], amount: number, data: Data[]): Data[] {
                 ...item,
                 start: addDays(item.start, amount),
                 end: addDays(item.end, amount),
+            }
+        } else {
+            return item
+        }
+    }).sort((a, b) => {
+        return compareAsc(a.start, b.start)
+    })
+}
+
+function scaleItems(ids: string[], amount: number, direction: "left" | "right", data: Data[]): Data[] {
+    return data.slice().map(item => {
+        if (ids.includes(item.id)) {
+            return {
+                ...item,
+                start: direction === "left" ? addDays(item.start, amount) : item.start,
+                end: direction === "right" ? addDays(item.end, amount) : item.end,
             }
         } else {
             return item

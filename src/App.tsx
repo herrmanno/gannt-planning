@@ -1,5 +1,6 @@
 import * as React from "react"
 import { addDays, format, differenceInDays, isWeekend } from "date-fns"
+import { Data } from "./data"
 
 
 type Props = {
@@ -7,10 +8,11 @@ type Props = {
     numDays: number
     cellWidth: number
     rowHeight: number
-    data: Array<Array<{ id: string, start: Date, end: Date, title: string, color: string }>>
+    data: Data[][]
     selectedItemIDs: string[]
     cursorDate: Date
     cursorRow: number
+    onDragStart: React.MouseEventHandler
 }
 
 export default function App(props: Props) {
@@ -22,8 +24,20 @@ export default function App(props: Props) {
         <>
             <Row {...props} dateRow={true} data={[]} />
             <div style={containerStyle}>
-                {props.data.map((rowData, idx) => <Row key={idx} {...props} dateRow={false} data={rowData} />)}
-                <Cursor date={props.cursorDate} row={props.cursorRow} startDate={props.startDate} cellWidth={props.cellWidth} rowHeight={props.rowHeight} />
+                {props.data.map((rowData, idx) =>
+                    <Row
+                        key={idx}
+                        {...props}
+                        dateRow={false}
+                        data={rowData}
+                        onDragStart={props.onDragStart}/>
+                )}
+                <Cursor
+                    date={props.cursorDate}
+                    row={props.cursorRow}
+                    startDate={props.startDate}
+                    cellWidth={props.cellWidth}
+                    rowHeight={props.rowHeight} />
             </div>
         </>
     )
@@ -35,9 +49,10 @@ type RowProps = {
     numDays: number
     cellWidth: number
     rowHeight: number
-    data: Array<{ id: string, start: Date, end: Date, title: string, color: string }>
+    data: Data[]
     selectedItemIDs: string[]
     dateRow: boolean
+    onDragStart?: React.DragEventHandler
 }
 
 function Row(props: RowProps) {
@@ -61,7 +76,8 @@ function Row(props: RowProps) {
                 startDate={props.startDate}
                 cellWidth={props.cellWidth}
                 selected={props.selectedItemIDs.includes(itemData.id)}
-                data={itemData} />
+                data={itemData}
+                onItemMouseDown={props.onDragStart} />
         )}
     </div>
 }
@@ -92,7 +108,8 @@ type ItemProps = {
     startDate: Date
     cellWidth: number
     selected: boolean
-    data: { start: Date, end: Date, title: string, color: string }
+    data: Data
+    onItemMouseDown: React.MouseEventHandler
 }
 
 
@@ -106,9 +123,28 @@ function Item(props: ItemProps) {
         boxSizing: "border-box",
         backgroundColor: props.data.color,
         border: props.selected ? "1px dashed white" : null,
+        userSelect: "none",
     }
 
-    return <div style={style}>{props.data.title}</div>
+    const handleStyle: React.CSSProperties = {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        width: "10px",
+        background: "rgba(0,0,0,0.4)",
+    }
+
+    return (
+        <div
+            style={style}
+            data-itemid={props.data.id}
+            onMouseDown={props.onItemMouseDown}
+        >
+            <div data-handle="left" style={{...handleStyle, left: 0}}></div>
+            {props.data.title}
+            <div data-handle="right" style={{...handleStyle, right: 0}}></div>
+        </div>
+    )
 }
 
 type CursorProps = {
