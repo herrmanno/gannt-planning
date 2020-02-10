@@ -1,5 +1,5 @@
 import { Container } from "react-class-container"
-import { parse, startOfWeek, addDays, compareAsc, isWithinInterval } from "date-fns"
+import { parse, startOfWeek, addDays, compareAsc, isWithinInterval, areIntervalsOverlapping } from "date-fns"
 import App from "./App"
 import data, { RawData, Data } from "./data"
 
@@ -123,7 +123,7 @@ export default class AppContainer extends Container(App)<{}, State> {
                             startX: dragging.startX + xDiff * this.state.cellWidth
                         },
                         parsedData: newParsedData,
-                        data: buildData(newParsedData),
+                        data: buildData(newParsedData, { id: dragging.id, row: getRowOfItem(dragging.id, this.state.data)}),
                     })
                 } else {
                     const newParsedData = scaleItems([dragging.id], xDiff, dragging.handle, parsedData)
@@ -133,7 +133,7 @@ export default class AppContainer extends Container(App)<{}, State> {
                             startX: dragging.startX + xDiff * this.state.cellWidth
                         },
                         parsedData: newParsedData,
-                        data: buildData(newParsedData),
+                        data: buildData(newParsedData, { id: dragging.id, row: getRowOfItem(dragging.id, this.state.data)}),
                     })
                 }
             }
@@ -143,6 +143,7 @@ export default class AppContainer extends Container(App)<{}, State> {
     onMouseUp = () => {
         this.setState({
             dragging: null,
+            data: buildData(this.state.parsedData),
         })
 
         document.removeEventListener("mousemove", this.onMouseMove)
@@ -207,11 +208,24 @@ function parseData(data: RawData[]): Data[] {
     })
 }
 
-function buildData(data: Data[]): Data[][] {
+function buildData(data: Data[], fixedItem: { id: string, row: number } = { id: null, row: null }): Data[][] {
     const rows = data.reduce((acc, item) => {
-        const rowIndexToInsert = acc.findIndex(row => {
-            const lastItem = row.slice(-1)[0]
-            return !lastItem || +lastItem.end <= +item.start
+        const rowIndexToInsert = acc.findIndex((row, idx) => {
+            const intervals = [
+                row.slice(-1)[0],
+                (
+                    fixedItem &&
+                    item.id !== fixedItem.id &&
+                    idx === fixedItem.row &&
+                    data.find(item => item.id === fixedItem.id)
+                )
+            ].filter(Boolean)
+            
+            if (item.id === fixedItem.id) {
+                return idx === fixedItem.row
+            } else {
+                return intervals.every(interval => !areIntervalsOverlapping(item, interval))
+            }
         })
         if (rowIndexToInsert !== -1) {
             return acc.map((row, idx) => {
@@ -227,4 +241,8 @@ function buildData(data: Data[]): Data[][] {
     }, new Array<Data[]>([]))
 
     return rows
+}
+
+function getRowOfItem(id: string, data: Data[][]): number {
+    return data.findIndex(row => row.some(item => item.id === id))
 }
