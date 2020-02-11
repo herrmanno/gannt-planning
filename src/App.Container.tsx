@@ -40,7 +40,23 @@ export default class AppContainer extends Container(App)<{}, State> {
     }
 
     onKeyDown = (e: KeyboardEvent) => {
-        if (e.metaKey) {
+        if (e.shiftKey) {
+            if (e.keyCode === 37) {
+                this.setState(s => ({ startDate: addDays(s.startDate, -7) }))
+            } else if (e.keyCode === 39) {
+                this.setState(s => ({ startDate: addDays(s.startDate, 7) }))
+            } else if (e.keyCode === 38) {
+                this.setState(s => ({
+                    numDays: s.numDays + 7,
+                    cellWidth: ~~(document.body.clientWidth / (s.numDays + 7)),
+                }))
+            } else if (e.keyCode === 40) {
+                this.setState(s => ({
+                    numDays: s.numDays - 7,
+                    cellWidth: ~~(document.body.clientWidth / (s.numDays - 7)),
+                }))
+            }
+        } else if (e.metaKey) {
             if (e.keyCode === 37) {
                 e.preventDefault()
                 const parsedData = moveItems(this.state.selectedItemIDs, -1, this.state.parsedData)
