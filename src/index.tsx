@@ -1,5 +1,9 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
-import App from "./App.Container"
+import App from "./components/App.Container"
+import { Provider } from "react-class-container"
+import store from "./redux/store"
 
-ReactDOM.render(<App/>, document.body.appendChild(document.createElement("main")))
+ReactDOM.render(
+    <Provider store={store} children={<App />} />,
+    document.body.appendChild(document.createElement("main")))

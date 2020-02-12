@@ -1,6 +1,6 @@
 import * as React from "react"
 import { addDays, format, differenceInDays, isWeekend } from "date-fns"
-import { Data } from "./data"
+import { Data } from "../data"
 
 
 type Props = {
@@ -30,7 +30,7 @@ export default function App(props: Props) {
                         {...props}
                         dateRow={false}
                         data={rowData}
-                        onMouseDown={props.onMouseDown}/>
+                        onMouseDown={props.onMouseDown} />
                 )}
                 <Row {...props} dateRow={false} data={[]} />
                 <Cursor
@@ -74,7 +74,7 @@ function Row(props: RowProps) {
                 date={addDays(props.startDate, idx)}
                 cellWidth={props.cellWidth}
                 dateCell={props.dateRow}
-                onMouseDown={props.onMouseDown}/>
+                onMouseDown={props.onMouseDown} />
         )}
         {props.data.map(itemData =>
             <Item
@@ -156,9 +156,9 @@ function Item(props: ItemProps) {
             data-itemid={props.data.id}
             onMouseDown={props.onMouseDown}
         >
-            <div data-handle="left" style={{...handleStyle, left: 0}}></div>
+            <div data-handle="left" style={{ ...handleStyle, left: 0 }}></div>
             {props.data.title}
-            <div data-handle="right" style={{...handleStyle, right: 0}}></div>
+            <div data-handle="right" style={{ ...handleStyle, right: 0 }}></div>
         </div>
     )
 }
