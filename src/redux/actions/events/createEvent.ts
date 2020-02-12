@@ -1,7 +1,7 @@
 import { Action } from "redux"
 import { Data } from "../../../data"
 
-export default moveEvents
+export default createEvent
 export { CreateEvent, CREATE_EVENT }
 
 
@@ -14,7 +14,7 @@ interface CreateEvent extends Action {
     }
 }
 
-function moveEvents(data: Partial<Data>): any {
+function createEvent(data: Partial<Data>): any {
     return async (dispatch: Function) => {
         const event: Data = {
             title: "Foo",

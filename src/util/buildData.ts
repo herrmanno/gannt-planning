@@ -23,6 +23,7 @@ function buildData(data: Data[], fixedItem: { id: string, row: number } = { id: 
             }
         })
         if (rowIndexToInsert !== -1) {
+            2
             return acc.map((row, idx) => {
                 if (idx === rowIndexToInsert) {
                     return [...row, item]
