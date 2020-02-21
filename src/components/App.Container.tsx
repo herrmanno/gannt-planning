@@ -1,6 +1,7 @@
 import { ReduxContainer } from "react-class-container"
 import App from "./App"
 import ReduxState from "../redux/State"
+import setCellWidth from "../redux/actions/ui/setCellWidth"
 import commitEvents from "../redux/actions/events/commitEvents"
 
 type State = {
@@ -10,6 +11,11 @@ type State = {
 export default class AppContainer extends ReduxContainer(App)<ReduxState, {}, State> {
     state = {
         selectedEventID: null
+    }
+
+    componentDidMount() {
+        const { numDays } = this.store.getState().ui
+        this.store.dispatch(setCellWidth(~~(document.body.clientWidth / numDays)))
     }
 
     onSelectEvent = (id: string) => {

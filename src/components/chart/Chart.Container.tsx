@@ -1,23 +1,23 @@
 import { ReduxContainer } from "react-class-container"
 import { startOfWeek, addDays, isWithinInterval } from "date-fns"
 import Chart from "./Chart"
-import buildData from "../util/buildData"
-import getRowOfItem from "../util/getRowOfItem"
-import ReduxState from "../redux/State"
-import loadEvents from "../redux/actions/events/loadEvents"
-import createEvent from "../redux/actions/events/createEvent"
-import moveEvents from "../redux/actions/events/moveEvents"
-import scaleEvents from "../redux/actions/events/scaleEvents"
+import buildData from "../../util/buildData"
+import getRowOfItem from "../../util/getRowOfItem"
+import ReduxState from "../../redux/State"
+import loadEvents from "../../redux/actions/events/loadEvents"
+import createEvent from "../../redux/actions/events/createEvent"
+import moveEvents from "../../redux/actions/events/moveEvents"
+import scaleEvents from "../../redux/actions/events/scaleEvents"
+import setStartDate from "../../redux/actions/ui/setStartDate"
+import setNumDays from "../../redux/actions/ui/setNumDays"
+import setCellWidth from "../../redux/actions/ui/setCellWidth"
 
 type Props = {
+    title?: string
     onSelectEvent(id: string): any
 }
 
 type State = {
-    startDate: Date
-    numDays: number
-    cellWidth: number
-    rowHeight: number
     cursorDate: Date
     cursorRow: number
     selectedItemIDs: string[]
@@ -26,19 +26,13 @@ type State = {
 
 export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Props, State> {
     state: State = {
-        startDate: startOfWeek(new Date(), { weekStartsOn: 1 }),
-        numDays: 28,
-        cellWidth: 0,
-        rowHeight: 40,
         cursorDate: startOfWeek(new Date(), { weekStartsOn: 1 }),
         cursorRow: 0,
         selectedItemIDs: [],
     }
 
     componentDidMount() {
-        this.setState({
-            cellWidth: ~~(document.body.clientWidth / this.state.numDays),
-        }, this.updateSelectedItems)
+        // this.updateSelectedItems()
         document.addEventListener("keydown", this.onKeyDown)
 
         this.store.dispatch(loadEvents())
@@ -47,19 +41,17 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
     onKeyDown = async (e: KeyboardEvent) => {
         if (e.shiftKey) {
             if (e.keyCode === 37) {
-                this.setState(s => ({ startDate: addDays(s.startDate, -7) }))
+                this.store.dispatch(setStartDate(d => addDays(d, -7)))
             } else if (e.keyCode === 39) {
-                this.setState(s => ({ startDate: addDays(s.startDate, 7) }))
+                this.store.dispatch(setStartDate(d => addDays(d, 7)))
             } else if (e.keyCode === 38) {
-                this.setState(s => ({
-                    numDays: s.numDays + 7,
-                    cellWidth: ~~(document.body.clientWidth / (s.numDays + 7)),
-                }))
+                const { numDays } = this.store.getState().ui
+                this.store.dispatch(setNumDays(d => d + 7))
+                this.store.dispatch(setCellWidth(~~(document.body.clientWidth / (numDays + 7))))
             } else if (e.keyCode === 40) {
-                this.setState(s => ({
-                    numDays: s.numDays - 7,
-                    cellWidth: ~~(document.body.clientWidth / (s.numDays - 7)),
-                }))
+                const { numDays } = this.store.getState().ui
+                this.store.dispatch(setNumDays(d => d - 7))
+                this.store.dispatch(setCellWidth(~~(document.body.clientWidth / (numDays - 7))))
             }
         } else if (e.metaKey) {
             if (e.keyCode === 37) {
@@ -111,8 +103,9 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
     }
 
     onMouseMove = async (e: MouseEvent) => {
+        const { cellWidth } = this.store.getState().ui
         const dragging = { ...this.state.dragging }
-        const xDiff = ~~((e.clientX - dragging!.startX) / this.state.cellWidth)
+        const xDiff = ~~((e.clientX - dragging!.startX) / cellWidth)
 
         if (xDiff !== 0) {
             if (!dragging.id) {
@@ -133,7 +126,7 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
                     this.setState({
                         dragging: {
                             ...dragging,
-                            startX: dragging.startX + xDiff * this.state.cellWidth
+                            startX: dragging.startX + xDiff * cellWidth
                         },
                     })
                 } else {
@@ -141,7 +134,7 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
                     this.setState({
                         dragging: {
                             ...dragging,
-                            startX: dragging.startX + xDiff * this.state.cellWidth
+                            startX: dragging.startX + xDiff * cellWidth
                         },
                     })
                 }
@@ -171,10 +164,15 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
         this.setState({ selectedItemIDs: ids })
     }
 
-    getChildProps(_props, state: State, reduxState: ReduxState) {
+    getChildProps(props: Props, state: State, reduxState: ReduxState) {
         const eventsArray = reduxState.data.events
         return {
             ...state,
+            title: props.title,
+            startDate: reduxState.ui.startDate,
+            numDays: reduxState.ui.numDays,
+            cellWidth: reduxState.ui.cellWidth,
+            rowHeight: reduxState.ui.rowHeight,
             parsedData: eventsArray,
             data: buildData(
                 eventsArray,

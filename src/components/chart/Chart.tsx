@@ -1,6 +1,6 @@
 import * as React from "react"
 import { addDays, format, differenceInDays, isWeekend } from "date-fns"
-import { Data } from "../data"
+import { Data } from "../../data"
 
 
 type Props = {
@@ -8,10 +8,11 @@ type Props = {
     numDays: number
     cellWidth: number
     rowHeight: number
+    title?: string
     data: Data[][]
     selectedItemIDs: string[]
-    cursorDate: Date
-    cursorRow: number
+    // cursorDate: Date
+    // cursorRow: number
     onMouseDown: React.MouseEventHandler
     onDoubleClick: React.MouseEventHandler
 }
@@ -21,20 +22,26 @@ export default function Chart(props: Props) {
         position: "relative"
     }
 
+    const headerStyle: React.CSSProperties = {
+        height: ~~(props.rowHeight / 1.5),
+        width: props.numDays * props.cellWidth,
+        boxSizing: "border-box",
+        background: "lightgrey",
+    }
+
     return (
         <>
-            <Row {...props} dateRow={true} data={[]} />
             <div style={containerStyle}>
+                {props.title && <div style={headerStyle}>{props.title}</div>}
                 {props.data.map((rowData, idx) =>
                     <Row
                         key={idx}
                         {...props}
-                        dateRow={false}
                         data={rowData}
                         onMouseDown={props.onMouseDown}
                         onDoubleClick={props.onDoubleClick} />
                 )}
-                <Row {...props} dateRow={false} data={[]} />
+                <Row {...props} data={[]} />
                 {/* <Cursor
                     date={props.cursorDate}
                     row={props.cursorRow}
@@ -54,7 +61,6 @@ type RowProps = {
     rowHeight: number
     data: Data[]
     selectedItemIDs: string[]
-    dateRow: boolean
     onMouseDown?: React.DragEventHandler
     onDoubleClick: React.MouseEventHandler
 }
@@ -76,7 +82,6 @@ function Row(props: RowProps) {
                 key={addDays(props.startDate, idx).toString()}
                 date={addDays(props.startDate, idx)}
                 cellWidth={props.cellWidth}
-                dateCell={props.dateRow}
                 onMouseDown={props.onMouseDown} />
         )}
         {props.data.map(itemData =>
@@ -95,7 +100,6 @@ function Row(props: RowProps) {
 
 type CellProps = {
     date: Date
-    dateCell: boolean
     cellWidth: number
     onMouseDown: React.MouseEventHandler
 }
@@ -118,9 +122,7 @@ function Cell(props: CellProps) {
             data-date={props.date}
             style={cellStyle}
             onMouseDown={props.onMouseDown}
-        >
-            {props.dateCell ? dateString : null}
-        </div>
+        />
     )
 }
 

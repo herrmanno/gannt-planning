@@ -1,5 +1,6 @@
 import * as React from "react"
-import Chart from "./Chart.Container"
+import Chart from "./chart/Chart.Container"
+import DateHeader from "./chart/DateHeader.container"
 import EventEditDialog from "./EventEditDialog.Container"
 
 export default App
@@ -16,7 +17,8 @@ function App(props: Props) {
     return (
         <>
             <button onClick={props.onCommitEvents}>Commit</button>
-            <Chart onSelectEvent={props.onSelectEvent} />
+            <DateHeader />
+            <Chart title="Foo bar" onSelectEvent={props.onSelectEvent} />
             {props.selectedEventID &&
                 <EventEditDialog eventID={props.selectedEventID} onCancel={unselectEvent} />
             }
