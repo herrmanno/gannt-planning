@@ -1,5 +1,6 @@
 import { Action } from "redux"
 import { Data } from "../../../data"
+import uuid = require("uuid")
 
 export default createEvent
 export { CreateEvent, CREATE_EVENT }
@@ -22,7 +23,7 @@ function createEvent(data: Partial<Data>): any {
             start: null,
             end: null,
             ...data,
-            id: Math.random().toString(36),
+            id: uuid.v4(),
         }
 
         dispatch({

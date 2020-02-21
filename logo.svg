@@ -1,0 +1,54 @@
+<svg viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+    <style type="text/css">
+        <![CDATA[
+        .cog {
+            fill: black;
+        }
+        ]]>
+    </style>
+
+    <g clip-path="url(#clip)">
+        <circle id="wheel" r="250" cx="500" cy="500" stroke="black" stroke-width="30" fill="transparent"/>
+        <circle r="50" cx="500" cy="500" fill="black"/>
+        <rect height="70" width="100" x="450" y="465" class="cog" transform= "rotate(0 500 500) translate(0 270)"/>
+        <rect height="70" width="100" x="450" y="465" class="cog" transform= "rotate(45 500 500) translate(0 270)"/>
+        <rect height="70" width="100" x="450" y="465" class="cog" transform= "rotate(90 500 500) translate(0 270)"/>
+        <rect height="70" width="100" x="450" y="465" class="cog" transform= "rotate(135 500 500) translate(0 270)"/>
+        <rect height="70" width="100" x="450" y="465" class="cog" transform= "rotate(180 500 500) translate(0 270)"/>
+        <rect height="70" width="100" x="450" y="465" class="cog" transform= "rotate(225 500 500) translate(0 270)"/>
+        <rect height="70" width="100" x="450" y="465" class="cog" transform= "rotate(270 500 500) translate(0 270)"/>
+        <rect height="70" width="100" x="450" y="465" class="cog" transform= "rotate(315 500 500) translate(0 270)"/>
+
+        <path
+            id="title-path1"
+            d="M265,490 a220,220 0 1,0 470,0"
+            fill="transparent"
+        />
+        <text width="500" x="180" style="font-size: 64; font-weight: bold;">
+            <textPath alignment-baseline="bottom" xlink:href="#title-path1">
+            PACKSTATION
+            </textPath>
+        </text>
+
+        <path
+        id="title-path2"
+        d="M265,510 a220,220 1 1 1 470,0"
+        fill="transparent"
+        />
+        <text width="0" x="0" style="font-size: 64; font-weight: bold;">
+            <textPath alignment-baseline="hanging" startOffset="17%" xlink:href="#title-path2">
+            Hanover Punkrock
+            </textPath>
+        </text>
+    </g>
+
+    <clipPath id="clip">
+        <rect height="1000" width="1000"/>
+    </clipPath>
+    <path
+        d="M100,100 l00,800 l800,0 l0,-550 l-210,20 l-30,-40 l-30,-20"
+        fill="rgba(200,0,0,0.5)"/>
+    <path
+        d="M100,100 l00,800 l800,0 l0,-550 l-180,0 l0,-50 l-25,-15 l0,-20 l-150,-40 l-10,-30 l-20,0 l-20,20 l-20,0"
+        fill="transparent"/>
+</svg>

@@ -2,6 +2,7 @@ export interface BaseData {
     id: string
     title: string
     color: string
+    userID?: string
 }
 
 export interface RawData extends BaseData {

@@ -1,11 +1,13 @@
+import { ReduxContainer } from "react-class-container"
 import App from "./App"
-import { Container } from "react-class-container"
+import ReduxState from "../redux/State"
+import commitEvents from "../redux/actions/events/commitEvents"
 
 type State = {
     selectedEventID?: string
 }
 
-export default class AppContainer extends Container(App)<{}, State> {
+export default class AppContainer extends ReduxContainer(App)<ReduxState, {}, State> {
     state = {
         selectedEventID: null
     }
@@ -14,10 +16,15 @@ export default class AppContainer extends Container(App)<{}, State> {
         this.setState({ selectedEventID: id })
     }
 
+    onCommitEvents = () => {
+        this.store.dispatch(commitEvents())
+    }
+
     getChildProps(_props: any, state: State) {
         return {
             ...state,
             onSelectEvent: this.onSelectEvent,
+            onCommitEvents: this.onCommitEvents,
         }
     }
 }

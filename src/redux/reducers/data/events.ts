@@ -9,6 +9,7 @@ import { PatchEvent } from "../../actions/events/patchEvent"
 export default reducer
 
 type ReducerState = State["data"]["events"]
+// TODO: handle commit
 type Action = LoadEvents | CreateEvent | PatchEvent | MoveEvents | ScaleEvents
 const defaultState: ReducerState = []
 

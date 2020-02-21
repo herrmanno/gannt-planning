@@ -5,6 +5,7 @@ export default EventEditDialog
 
 type Props = {
     event: Data
+    users: { id: string, name: string }[]
     onCancel(): any
     onChangeEvent(data: Partial<Data>): any
 }
@@ -41,6 +42,8 @@ function EventEditDialog(props: Props) {
         })
     }
 
+    const onChangeUser = e => props.onChangeEvent({ userID: e.currentTarget.value })
+
     const onCancel = (e: React.MouseEvent) => {
         if (e.target === e.currentTarget) {
             props.onCancel()
@@ -53,6 +56,12 @@ function EventEditDialog(props: Props) {
                 <h1>Event</h1>
                 <input value={props.event.title} onChange={onChangeTitle} />
                 <input value={props.event.color} onChange={onChangeColor} type="color" />
+                <select value={props.event.userID} onChange={onChangeUser}>
+                    <option value={null}></option>
+                    {props.users.map(user =>
+                        <option key={user.id} value={user.id}>{user.name}</option>
+                    )}
+                </select>
             </div>
         </div>
     )

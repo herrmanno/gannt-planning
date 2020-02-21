@@ -16,7 +16,9 @@ interface LoadEvents extends Action {
 
 function loadEvents(): any {
     return async (dispatch: Function) => {
-        const events = JSON.parse(localStorage.getItem("events") || "[]")
+        const res = await fetch("http://localhost:8080/api/events")
+        const events = await res.json()
+
         dispatch({
             type: LOAD_EVENTS,
             payload: { events }
