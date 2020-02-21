@@ -1,16 +1,17 @@
 import State from "../../State"
+import parseData from "../../../util/parseData"
 import { LoadEvents } from "../../actions/events/loadEvents"
 import { MoveEvents } from "../../actions/events/moveEvents"
 import { ScaleEvents } from "../../actions/events/scaleEvents"
 import { CreateEvent } from "../../actions/events/createEvent"
-import parseData from "../../../util/parseData"
 import { PatchEvent } from "../../actions/events/patchEvent"
+import { RemoveEvent } from "../../actions/events/removeEvent"
 
 export default reducer
 
 type ReducerState = State["data"]["events"]
 // TODO: handle commit
-type Action = LoadEvents | CreateEvent | PatchEvent | MoveEvents | ScaleEvents
+type Action = LoadEvents | CreateEvent | PatchEvent | RemoveEvent | MoveEvents | ScaleEvents
 const defaultState: ReducerState = []
 
 
@@ -22,6 +23,9 @@ function reducer(state = defaultState, action: Action): ReducerState {
         }
         case "CREATE_EVENT": {
             return [...state, action.payload.event]
+        }
+        case "REMOVE_EVENT": {
+            return state.filter(event => event.id !== action.payload.id)
         }
         case "PATCH_EVENT":
             return [

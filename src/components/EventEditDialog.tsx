@@ -8,6 +8,7 @@ type Props = {
     users: { id: string, name: string }[]
     onCancel(): any
     onChangeEvent(data: Partial<Data>): any
+    onRemoveEvent(id: string): any
 }
 
 function EventEditDialog(props: Props) {
@@ -44,6 +45,11 @@ function EventEditDialog(props: Props) {
 
     const onChangeUser = e => props.onChangeEvent({ userID: e.currentTarget.value })
 
+    const onRemove = () => {
+        props.onRemoveEvent(props.event.id)
+        props.onCancel()
+    }
+
     const onCancel = (e: React.MouseEvent) => {
         if (e.target === e.currentTarget) {
             props.onCancel()
@@ -62,6 +68,7 @@ function EventEditDialog(props: Props) {
                         <option key={user.id} value={user.id}>{user.name}</option>
                     )}
                 </select>
+                <button onClick={onRemove}>Remove</button>
             </div>
         </div>
     )
