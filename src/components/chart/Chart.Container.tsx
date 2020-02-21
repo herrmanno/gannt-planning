@@ -11,9 +11,11 @@ import scaleEvents from "../../redux/actions/events/scaleEvents"
 import setStartDate from "../../redux/actions/ui/setStartDate"
 import setNumDays from "../../redux/actions/ui/setNumDays"
 import setCellWidth from "../../redux/actions/ui/setCellWidth"
+import { Data } from "../../data"
 
 type Props = {
     title?: string
+    filter?(data: Data): boolean
     onSelectEvent(id: string): any
 }
 
@@ -165,7 +167,8 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
     }
 
     getChildProps(props: Props, state: State, reduxState: ReduxState) {
-        const eventsArray = reduxState.data.events
+        const eventsArray = reduxState.data.events.filter(props.filter || Boolean)
+
         return {
             ...state,
             title: props.title,
