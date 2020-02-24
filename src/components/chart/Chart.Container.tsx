@@ -8,11 +8,11 @@ import loadEvents from "../../redux/actions/events/loadEvents"
 import createEvent from "../../redux/actions/events/createEvent"
 import moveEvents from "../../redux/actions/events/moveEvents"
 import scaleEvents from "../../redux/actions/events/scaleEvents"
-import { Data } from "../../data"
+import Event from "../../Event"
 
 type Props = {
     title?: string
-    filter?(data: Data): boolean
+    filter?(data: Event): boolean
     onSelectEvent(id: string): any
 }
 

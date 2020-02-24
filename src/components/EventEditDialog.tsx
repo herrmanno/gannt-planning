@@ -1,13 +1,13 @@
 import * as React from "react"
-import { Data } from "../data"
+import Event from "../Event"
 
 export default EventEditDialog
 
 type Props = {
-    event: Data
+    event: Event
     users: { id: string, name: string }[]
     onCancel(): any
-    onChangeEvent(data: Partial<Data>): any
+    onChangeEvent(data: Partial<Event>): any
     onRemoveEvent(id: string): any
 }
 
@@ -58,18 +58,24 @@ function EventEditDialog(props: Props) {
 
     return (
         <div style={styleBackdrop} onClick={onCancel}>
-            <div style={style}>
+            <form style={style}>
                 <h1>Event</h1>
+                <label>Title</label>
                 <input value={props.event.title} onChange={onChangeTitle} />
+                <br />
+                <label>Color</label>
                 <input value={props.event.color} onChange={onChangeColor} type="color" />
+                <br />
+                <label>Owner</label>
                 <select value={props.event.userID} onChange={onChangeUser}>
                     <option value={null}></option>
                     {props.users.map(user =>
                         <option key={user.id} value={user.id}>{user.name}</option>
                     )}
                 </select>
+                <br />
                 <button onClick={onRemove}>Remove</button>
-            </div>
+            </form>
         </div>
     )
 }

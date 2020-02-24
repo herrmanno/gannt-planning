@@ -1,5 +1,5 @@
 import { Action } from "redux"
-import { RawData } from "../../../data"
+import { SerializedEvent } from "./../../../Event"
 import State from "../../State"
 import { addDays, format } from "date-fns"
 
@@ -12,7 +12,7 @@ const LOAD_EVENTS = "LOAD_EVENTS"
 interface LoadEvents extends Action {
     type: typeof LOAD_EVENTS
     payload: {
-        events: RawData[]
+        events: SerializedEvent[]
     }
 }
 

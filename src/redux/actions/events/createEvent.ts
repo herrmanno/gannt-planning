@@ -1,5 +1,5 @@
 import { Action } from "redux"
-import { Data } from "../../../data"
+import Event from "../../../Event"
 import uuid = require("uuid")
 
 export default createEvent
@@ -11,13 +11,13 @@ const CREATE_EVENT = "CREATE_EVENT"
 interface CreateEvent extends Action {
     type: typeof CREATE_EVENT
     payload: {
-        event: Data
+        event: Event
     }
 }
 
-function createEvent(data: Partial<Data>): any {
+function createEvent(data: Partial<Event>): any {
     return async (dispatch: Function) => {
-        const event: Data = {
+        const event: Event = {
             title: "Foo",
             color: "red",
             start: null,

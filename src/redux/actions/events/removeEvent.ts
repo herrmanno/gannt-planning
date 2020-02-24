@@ -1,6 +1,4 @@
 import { Action } from "redux"
-import { Data } from "../../../data"
-import uuid = require("uuid")
 
 export default removeEvent
 export { RemoveEvent, REMOVE_EVENT }

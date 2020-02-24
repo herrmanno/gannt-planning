@@ -1,5 +1,5 @@
 import { Action } from "redux"
-import { Data } from "../../../data"
+import Event from "../../../Event"
 import { addDays, compareAsc } from "date-fns"
 import State from "../../State"
 
@@ -12,7 +12,7 @@ const SCALE_EVENTS = "SCALE_EVENTS"
 interface ScaleEvents extends Action {
     type: typeof SCALE_EVENTS
     payload: {
-        events: Data[]
+        events: Event[]
     }
 }
 

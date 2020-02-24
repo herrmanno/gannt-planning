@@ -1,6 +1,6 @@
 import * as React from "react"
 import { addDays, format, differenceInDays, isWeekend } from "date-fns"
-import { Data } from "../../data"
+import Event from "../../Event"
 
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
     cellWidth: number
     rowHeight: number
     title?: string
-    data: Data[][]
+    data: Event[][]
     selectedItemIDs: string[]
     // cursorDate: Date
     // cursorRow: number
@@ -59,7 +59,7 @@ type RowProps = {
     numDays: number
     cellWidth: number
     rowHeight: number
-    data: Data[]
+    data: Event[]
     selectedItemIDs: string[]
     onMouseDown?: React.DragEventHandler
     onDoubleClick: React.MouseEventHandler
@@ -130,7 +130,7 @@ type ItemProps = {
     startDate: Date
     cellWidth: number
     selected: boolean
-    data: Data
+    data: Event
     onMouseDown: React.MouseEventHandler
     onDoubleClick: React.MouseEventHandler
 }

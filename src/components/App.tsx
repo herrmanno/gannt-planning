@@ -3,7 +3,7 @@ import Chart from "./chart/Chart.Container"
 import DateHeader from "./chart/DateHeader.container"
 import EventEditDialog from "./EventEditDialog.Container"
 import KeyHandler from "./KeyHandler"
-import { Data } from "../data"
+import Event from "../Event"
 
 export default App
 
@@ -16,7 +16,7 @@ type Props = {
 function App(props: Props) {
     const unselectEvent = () => props.onSelectEvent(null)
 
-    const filterByAssignee = (event: Data) => !!event.userID
+    const filterByAssignee = (event: Event) => !!event.userID
 
     return (
         <>

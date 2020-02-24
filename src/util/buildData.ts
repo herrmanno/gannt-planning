@@ -1,9 +1,9 @@
 import { areIntervalsOverlapping } from "date-fns"
-import { Data } from "../data"
+import Event from "../Event"
 
 export default buildData
 
-function buildData(data: Data[], fixedItem: { id: string, row: number } = { id: null, row: null }): Data[][] {
+function buildData(data: Event[], fixedItem: { id: string, row: number } = { id: null, row: null }): Event[][] {
     const rows = data.reduce((acc, item) => {
         const rowIndexToInsert = acc.findIndex((row, idx) => {
             const intervals = [
@@ -34,7 +34,7 @@ function buildData(data: Data[], fixedItem: { id: string, row: number } = { id: 
         } else {
             return [...acc, [item]]
         }
-    }, new Array<Data[]>([]))
+    }, new Array<Event[]>([]))
 
     return rows.filter(row => row.length)
 }
