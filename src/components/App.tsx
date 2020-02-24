@@ -2,6 +2,7 @@ import * as React from "react"
 import Chart from "./chart/Chart.Container"
 import DateHeader from "./chart/DateHeader.container"
 import EventEditDialog from "./EventEditDialog.Container"
+import KeyHandler from "./KeyHandler"
 import { Data } from "../data"
 
 export default App
@@ -26,6 +27,7 @@ function App(props: Props) {
             {props.selectedEventID &&
                 <EventEditDialog eventID={props.selectedEventID} onCancel={unselectEvent} />
             }
+            <KeyHandler />
         </>
     )
 }

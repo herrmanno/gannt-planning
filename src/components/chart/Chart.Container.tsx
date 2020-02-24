@@ -8,9 +8,6 @@ import loadEvents from "../../redux/actions/events/loadEvents"
 import createEvent from "../../redux/actions/events/createEvent"
 import moveEvents from "../../redux/actions/events/moveEvents"
 import scaleEvents from "../../redux/actions/events/scaleEvents"
-import setStartDate from "../../redux/actions/ui/setStartDate"
-import setNumDays from "../../redux/actions/ui/setNumDays"
-import setCellWidth from "../../redux/actions/ui/setCellWidth"
 import { Data } from "../../data"
 
 type Props = {
@@ -34,60 +31,7 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
     }
 
     componentDidMount() {
-        // this.updateSelectedItems()
-        document.addEventListener("keydown", this.onKeyDown)
-
         this.store.dispatch(loadEvents())
-    }
-
-    onKeyDown = async (e: KeyboardEvent) => {
-        if (e.shiftKey) {
-            if (e.keyCode === 37) {
-                this.store.dispatch(setStartDate(d => addDays(d, -7)))
-            } else if (e.keyCode === 39) {
-                this.store.dispatch(setStartDate(d => addDays(d, 7)))
-            } else if (e.keyCode === 38) {
-                const { numDays } = this.store.getState().ui
-                this.store.dispatch(setNumDays(d => d + 7))
-                this.store.dispatch(setCellWidth(~~(document.body.clientWidth / (numDays + 7))))
-            } else if (e.keyCode === 40) {
-                const { numDays } = this.store.getState().ui
-                this.store.dispatch(setNumDays(d => d - 7))
-                this.store.dispatch(setCellWidth(~~(document.body.clientWidth / (numDays - 7))))
-            }
-        } else if (e.metaKey) {
-            if (e.keyCode === 37) {
-                e.preventDefault()
-                await this.store.dispatch(moveEvents({ ids: this.state.selectedItemIDs, amount: -1 }))
-                this.setState({
-                    cursorDate: addDays(this.state.cursorDate, -1)
-                })
-            } else if (e.keyCode === 39) {
-                e.preventDefault()
-                await this.store.dispatch(moveEvents({ ids: this.state.selectedItemIDs, amount: 1 }))
-                this.setState({
-                    cursorDate: addDays(this.state.cursorDate, 1)
-                })
-            }
-        } else {
-            if (e.keyCode === 37) {
-                this.setState({
-                    cursorDate: addDays(this.state.cursorDate, -1)
-                }, this.updateSelectedItems)
-            } else if (e.keyCode === 39) {
-                this.setState({
-                    cursorDate: addDays(this.state.cursorDate, 1)
-                }, this.updateSelectedItems)
-            } else if (e.keyCode === 38) {
-                this.setState({
-                    cursorRow: this.state.cursorRow - 1
-                }, this.updateSelectedItems)
-            } else if (e.keyCode === 40) {
-                this.setState({
-                    cursorRow: this.state.cursorRow + 1
-                }, this.updateSelectedItems)
-            }
-        }
     }
 
     onMouseDown = (e: React.DragEvent) => {

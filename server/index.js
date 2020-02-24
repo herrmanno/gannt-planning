@@ -2,6 +2,7 @@
 const fs = require("fs");
 const path = require("path");
 const express = require("express");
+const { parse, isWithinInterval } = require("date-fns");
 
 const app = express();
 
@@ -20,7 +21,17 @@ app.use((_, res, next) => {
 });
 
 app.get("/api/events", (req, res) => {
-  res.json(events);
+  const start = parse(req.query.start, "yyyy-MM-dd", 0);
+  const end = parse(req.query.end, "yyyy-MM-dd", 0);
+  res.json(
+    events.filter(item => {
+      const itemStart = parse(item.start, "yyyy-MM-dd", 0);
+      const itemEnd = parse(item.end, "yyyy-MM-dd", 0);
+      return (
+        isWithinInterval(itemStart, { start, end }) || isWithinInterval(itemEnd, { start, end })
+      );
+    })
+  );
 });
 
 // app.post("/api/events", (req, res) => {
