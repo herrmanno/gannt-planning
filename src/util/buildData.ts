@@ -3,7 +3,7 @@ import Event from "../Event"
 
 export default buildData
 
-function buildData(data: Event[], fixedItem: { id: string, row: number } = { id: null, row: null }): Event[][] {
+function buildData<T extends Event>(data: T[], fixedItem: { id: string, row: number } = { id: null, row: null }): T[][] {
     const rows = data.reduce((acc, item) => {
         const rowIndexToInsert = acc.findIndex((row, idx) => {
             const intervals = [
@@ -34,7 +34,7 @@ function buildData(data: Event[], fixedItem: { id: string, row: number } = { id:
         } else {
             return [...acc, [item]]
         }
-    }, new Array<Event[]>([]))
+    }, new Array<T[]>([]))
 
     return rows.filter(row => row.length)
 }

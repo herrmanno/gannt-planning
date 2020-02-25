@@ -3,6 +3,7 @@ interface BaseEvent {
     title: string
     color: string
     userID?: string
+    projectID?: string
 }
 
 export default interface Event extends BaseEvent {

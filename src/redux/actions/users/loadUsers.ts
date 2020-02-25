@@ -16,11 +16,11 @@ interface LoadUsers extends Action {
 function loadUsers(): any {
     return async (dispatch: Function) => {
         const res = await fetch("http://localhost:8080/api/users")
-        const events = await res.json()
+        const users = await res.json()
 
         dispatch({
             type: LOAD_USERS,
-            payload: { users: events }
+            payload: { users }
         } as LoadUsers)
     }
 }

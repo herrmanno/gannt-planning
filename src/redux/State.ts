@@ -1,12 +1,15 @@
 export default State
 
 import Event from "./../Event"
+import User from "../User"
+import Project from "../Project"
 
 type State = {
     data: {
         // TODO: refactor to { ids: string[], data: { [id: string]: Data } }
         events: Event[]
-        users: { id: string, name: string }[]
+        users: User[]
+        projects: Project[]
     }
     ui: {
         startDate: Date

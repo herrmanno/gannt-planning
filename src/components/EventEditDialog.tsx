@@ -6,6 +6,7 @@ export default EventEditDialog
 type Props = {
     event: Event
     users: { id: string, name: string }[]
+    projects: { id: string, name: string, color: string }[]
     onCancel(): any
     onChangeEvent(data: Partial<Event>): any
     onRemoveEvent(id: string): any
@@ -45,6 +46,8 @@ function EventEditDialog(props: Props) {
 
     const onChangeUser = e => props.onChangeEvent({ userID: e.currentTarget.value })
 
+    const onChangeProject = e => props.onChangeEvent({ projectID: e.currentTarget.value })
+
     const onRemove = () => {
         props.onRemoveEvent(props.event.id)
         props.onCancel()
@@ -62,9 +65,17 @@ function EventEditDialog(props: Props) {
                 <h1>Event</h1>
                 <label>Title</label>
                 <input value={props.event.title} onChange={onChangeTitle} />
-                <br />
+                {/* <br />
                 <label>Color</label>
-                <input value={props.event.color} onChange={onChangeColor} type="color" />
+                <input value={props.event.color} onChange={onChangeColor} type="color" /> */}
+                <br />
+                <label>Project</label>
+                <select value={props.event.projectID} onChange={onChangeProject}>
+                    <option value={null}></option>
+                    {props.projects.map(project =>
+                        <option key={project.id} value={project.id} label={project.name} />
+                    )}
+                </select>
                 <br />
                 <label>Owner</label>
                 <select value={props.event.userID} onChange={onChangeUser}>

@@ -1,7 +1,15 @@
 import * as React from "react"
 import { addDays, format, differenceInDays, isWeekend } from "date-fns"
+import Avatar from "../Avatar"
 import Event from "../../Event"
+import User from "../../User"
+import Project from "../../Project"
 
+type ExtendedEvent =
+    Event & {
+        project?: Project
+        user?: User
+    }
 
 type Props = {
     startDate: Date
@@ -9,7 +17,7 @@ type Props = {
     cellWidth: number
     rowHeight: number
     title?: string
-    data: Event[][]
+    data: ExtendedEvent[][]
     selectedItemIDs: string[]
     // cursorDate: Date
     // cursorRow: number
@@ -59,7 +67,7 @@ type RowProps = {
     numDays: number
     cellWidth: number
     rowHeight: number
-    data: Event[]
+    data: ExtendedEvent[]
     selectedItemIDs: string[]
     onMouseDown?: React.DragEventHandler
     onDoubleClick: React.MouseEventHandler
@@ -130,7 +138,7 @@ type ItemProps = {
     startDate: Date
     cellWidth: number
     selected: boolean
-    data: Event
+    data: ExtendedEvent
     onMouseDown: React.MouseEventHandler
     onDoubleClick: React.MouseEventHandler
 }
@@ -144,15 +152,31 @@ function Item(props: ItemProps) {
         height: "100%",
         width: differenceInDays(props.data.end, props.data.start) * props.cellWidth,
         boxSizing: "border-box",
-        backgroundColor: props.data.color,
+        backgroundColor: props.data.project ? props.data.project.color : "#999",
         border: props.selected ? "1px dashed white" : null,
         userSelect: "none",
+    }
+
+    const titleStyle = {
+        marginLeft: "10px",
+    }
+
+    const userStyle: React.CSSProperties = {
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        paddingLeft: 20,
+        display: "inline-block",
+        background: props.data.user && props.data.user.color,
+        fontSize: "0.6rem",
     }
 
     const handleStyle: React.CSSProperties = {
         position: "absolute",
         top: 0,
         bottom: 0,
+        zIndex: 2,
         width: "10px",
         background: "rgba(0,0,0,0.4)",
     }
@@ -165,7 +189,8 @@ function Item(props: ItemProps) {
             onDoubleClick={props.onDoubleClick}
         >
             <div data-handle="left" style={{ ...handleStyle, left: 0 }}></div>
-            {props.data.title}
+            <span style={titleStyle}>{props.data.title}</span>
+            {props.data.user && <span style={userStyle}>{props.data.user.name}</span>}
             <div data-handle="right" style={{ ...handleStyle, right: 0 }}></div>
         </div>
     )

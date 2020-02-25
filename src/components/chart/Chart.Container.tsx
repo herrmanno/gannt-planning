@@ -9,6 +9,8 @@ import createEvent from "../../redux/actions/events/createEvent"
 import moveEvents from "../../redux/actions/events/moveEvents"
 import scaleEvents from "../../redux/actions/events/scaleEvents"
 import Event from "../../Event"
+import loadProjects from "../../redux/actions/projects/loadProjects"
+import loadUsers from "../../redux/actions/users/loadUsers"
 
 type Props = {
     title?: string
@@ -32,6 +34,8 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
 
     componentDidMount() {
         this.store.dispatch(loadEvents())
+        this.store.dispatch(loadUsers())
+        this.store.dispatch(loadProjects())
     }
 
     onMouseDown = (e: React.DragEvent) => {
@@ -111,7 +115,14 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
     }
 
     getChildProps(props: Props, state: State, reduxState: ReduxState) {
-        const eventsArray = reduxState.data.events.filter(props.filter || Boolean)
+        const { events, users, projects } = reduxState.data
+        const eventsArray = events.filter(props.filter || Boolean).map(event => {
+            return {
+                ...event,
+                project: event.projectID && projects.find(p => p.id === event.projectID),
+                user: event.userID && users.find(u => u.id === event.userID),
+            }
+        })
 
         return {
             ...state,

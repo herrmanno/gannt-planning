@@ -12,6 +12,8 @@ app.use(express.json());
 const events = require("./events.json");
 // @ts-ignore
 const users = require("./users.json");
+// @ts-ignore
+const projects = require("./projects");
 
 app.use((_, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -65,6 +67,10 @@ app.patch("/api/events", (req, res) => {
 
 app.get("/api/users", (_, res) => {
   res.json(users);
+});
+
+app.get("/api/projects", (_, res) => {
+  res.json(projects);
 });
 
 app.listen(8080);
