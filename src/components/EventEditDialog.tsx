@@ -1,5 +1,6 @@
 import * as React from "react"
 import Event from "../Event"
+import { format, parse } from "date-fns"
 
 export default EventEditDialog
 
@@ -19,6 +20,7 @@ function EventEditDialog(props: Props) {
         left: "20%",
         right: "20%",
         bottom: "20%",
+        zIndex: 3,
         background: "white",
         boxShadow: "0px 0px 10px 10px rgba(0,0,0,.2)",
     }
@@ -29,24 +31,19 @@ function EventEditDialog(props: Props) {
         left: 0,
         right: 0,
         bottom: 0,
+        zIndex: 2,
         background: "0px 0px 10px 10px rgba(0,0,0,.1)",
     }
 
-    const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-        props.onChangeEvent({
-            title: e.currentTarget.value
-        })
-    }
-
-    const onChangeColor = (e: React.ChangeEvent<HTMLInputElement>) => {
-        props.onChangeEvent({
-            color: e.currentTarget.value
-        })
-    }
+    const onChangeTitle = e => props.onChangeEvent({ title: e.currentTarget.value })
 
     const onChangeUser = e => props.onChangeEvent({ userID: e.currentTarget.value })
 
     const onChangeProject = e => props.onChangeEvent({ projectID: e.currentTarget.value })
+
+    const onChangeStart = e => props.onChangeEvent({ start: parse(e.currentTarget.value, "yyyy-MM-dd", 0) })
+
+    const onChangeEnd = e => props.onChangeEvent({ end: parse(e.currentTarget.value, "yyyy-MM-dd", 0) })
 
     const onRemove = () => {
         props.onRemoveEvent(props.event.id)
@@ -65,10 +62,18 @@ function EventEditDialog(props: Props) {
                 <h1>Event</h1>
                 <label>Title</label>
                 <input value={props.event.title} onChange={onChangeTitle} />
-                {/* <br />
-                <label>Color</label>
-                <input value={props.event.color} onChange={onChangeColor} type="color" /> */}
                 <br />
+                <label>Start</label>
+                <input
+                    type="date"
+                    value={format(props.event.start, "yyyy-MM-dd")}
+                    onChange={onChangeStart} />
+                <br />
+                <label>End</label>
+                <input
+                    type="date"
+                    value={format(props.event.end, "yyyy-MM-dd")}
+                    onChange={onChangeEnd} />
                 <label>Project</label>
                 <select value={props.event.projectID} onChange={onChangeProject}>
                     <option value={null}></option>

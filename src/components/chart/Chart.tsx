@@ -150,7 +150,8 @@ function Item(props: ItemProps) {
         position: "absolute",
         left: differenceInDays(props.data.start, props.startDate) * props.cellWidth,
         height: "100%",
-        width: differenceInDays(props.data.end, props.data.start) * props.cellWidth,
+        // treat [start, end] as inclusive interval
+        width: (differenceInDays(props.data.end, props.data.start) + 1) * props.cellWidth,
         boxSizing: "border-box",
         backgroundColor: props.data.project ? props.data.project.color : "#999",
         border: props.selected ? "1px dashed white" : null,

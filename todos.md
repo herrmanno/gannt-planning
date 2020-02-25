@@ -6,5 +6,6 @@
 - resizeable machen
 - Optimierung der Speicherung von Änderungen
 - Design
+- Farbfeld aus Event entfernen
 - Mehr Felder für Events (Beschreibung, etc.)?
 - Projektpflege & Userpflege
