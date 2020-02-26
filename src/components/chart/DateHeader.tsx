@@ -24,6 +24,7 @@ function DateHeader(props: DateHeaderProps) {
     const cellStyle = {
         border: "1px solid rgba(0, 0, 0, 0.3)",
         width: props.cellWidth,
+        overflow: "hidden",
     }
 
     const dates = new Array(props.numDays).fill(0).map((_, idx) => addDays(props.startDate, idx))
@@ -31,7 +32,26 @@ function DateHeader(props: DateHeaderProps) {
     return <div style={rowStyle}>
         {dates.map(date =>
             <div key={date.toString()} style={cellStyle}>
-                {format(date, "dd MM")}
+                {props.cellWidth <= 50 ? (
+                    <>
+                        {format(date, "dd")}
+                        <br />
+                        {date.toLocaleDateString(navigator.language, { month: "short" })}
+                    </>
+                ) : props.cellWidth <= 120 ? (
+                    <>
+                        {date.toLocaleDateString(navigator.language, { weekday: "short" })}
+                        <br />
+                        {format(date, "dd.")}{"\u00a0"}{date.toLocaleDateString(navigator.language, { month: "short" })}
+                    </>
+                ) : true ? (
+                    <>
+                        {date.toLocaleDateString(navigator.language, { weekday: "long" })}
+                        <br />
+                        {format(date, "dd.")}{"\u00a0"}{date.toLocaleDateString(navigator.language, { month: "long" })}
+                    </>
+                ) : null}
+
             </div>
         )}
     </div>
