@@ -4,6 +4,7 @@ import DateHeader from "./chart/DateHeader.container"
 import EventEditDialog from "./EventEditDialog.Container"
 import ControlBar from "./ControlBar.Container"
 import KeyHandler from "./KeyHandler"
+import ResizeHandler from "./ResizeHandler"
 import Event from "../Event"
 import User from "../User"
 import Project from "../Project"
@@ -61,6 +62,7 @@ function App(props: Props) {
                 <EventEditDialog eventID={props.selectedEventID} onCancel={unselectEvent} />
             }
             <KeyHandler />
+            <ResizeHandler />
         </>
     )
 }
