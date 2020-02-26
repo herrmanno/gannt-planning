@@ -50,12 +50,22 @@ function App(props: Props) {
             }
             {props.additionalLaneCategory === "BY_PROJECT" &&
                 props.projects.sort(sortByName).map(p =>
-                    <Chart title={p.name} filter={filterByProject(p)} onSelectEvent={props.onSelectEvent} onCreateEvent={e => ({ ...e, projectID: p.id })} />
+                    <Chart
+                        key={p.id}
+                        title={p.name}
+                        filter={filterByProject(p)}
+                        onSelectEvent={props.onSelectEvent}
+                        onCreateEvent={e => ({ ...e, projectID: p.id })} />
                 )
             }
             {props.additionalLaneCategory === "BY_USER" &&
                 props.users.sort(sortByName).map(u =>
-                    <Chart title={u.name} filter={filterByUser(u)} onSelectEvent={props.onSelectEvent} onCreateEvent={e => ({ ...e, userID: u.id })} />
+                    <Chart
+                        key={u.id}
+                        title={u.name}
+                        filter={filterByUser(u)}
+                        onSelectEvent={props.onSelectEvent}
+                        onCreateEvent={e => ({ ...e, userID: u.id })} />
                 )
             }
             {props.selectedEventID &&
