@@ -16,5 +16,7 @@ type State = {
         numDays: number
         cellWidth: number
         rowHeight: number
+
+        additionalLaneCategory: "NONE" | "BY_PROJECT" | "BY_USER"
     }
 }

@@ -1,4 +1,5 @@
 import { Action } from "redux"
+import Project from "../../../Project"
 
 export default loadProjects
 export { LoadProjects, LOAD_PROJECTS }
@@ -9,7 +10,7 @@ const LOAD_PROJECTS = "LOAD_PROJECTS"
 interface LoadProjects extends Action {
     type: typeof LOAD_PROJECTS
     payload: {
-        projects: { id: string, name: string, color: string }[]
+        projects: Project[]
     }
 }
 

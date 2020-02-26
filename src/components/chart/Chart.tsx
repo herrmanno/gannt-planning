@@ -1,6 +1,5 @@
 import * as React from "react"
 import { addDays, format, differenceInDays, isWeekend } from "date-fns"
-import Avatar from "../Avatar"
 import Event from "../../Event"
 import User from "../../User"
 import Project from "../../Project"

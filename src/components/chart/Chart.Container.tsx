@@ -15,6 +15,7 @@ import loadUsers from "../../redux/actions/users/loadUsers"
 type Props = {
     title?: string
     filter?(data: Event): boolean
+    onCreateEvent?(event: Partial<Event>): Partial<Event>
     onSelectEvent(id: string): any
 }
 
@@ -61,12 +62,14 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
 
         if (xDiff !== 0) {
             if (!dragging.id) {
-                const event: any = await this.store.dispatch(createEvent({
+                const onCreateEvent = this.props.onCreateEvent || ((ev) => ev)
+                const eventData = onCreateEvent({
                     start: dragging.startDate,
                     end: addDays(dragging.startDate, 1),
                     title: "BAZ",
                     color: "#ee7733",
-                }))
+                })
+                const event: any = await this.store.dispatch(createEvent(eventData))
                 dragging.id = event.id
                 dragging.handle = xDiff > 0 ? "right" : "left"
                 this.setState({
