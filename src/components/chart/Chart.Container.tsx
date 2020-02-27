@@ -11,6 +11,7 @@ import scaleEvents from "../../redux/actions/events/scaleEvents"
 import Event from "../../Event"
 import loadProjects from "../../redux/actions/projects/loadProjects"
 import loadUsers from "../../redux/actions/users/loadUsers"
+import selectExistingEvents from "../../redux/selectors/selectExistingEvents"
 
 type Props = {
     title?: string
@@ -120,8 +121,8 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
     }
 
     getChildProps(props: Props, state: State, reduxState: ReduxState) {
-        const { events, users, projects } = reduxState.data
-        const eventsArray = events.filter(props.filter || Boolean).map(event => {
+        const { users, projects } = reduxState.data
+        const eventsArray = selectExistingEvents(reduxState).filter(props.filter || Boolean).map(event => {
             return {
                 ...event,
                 project: event.projectID && projects.find(p => p.id === event.projectID),

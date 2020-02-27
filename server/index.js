@@ -36,27 +36,27 @@ app.get("/api/events", (req, res) => {
   );
 });
 
-// app.post("/api/events", (req, res) => {
-//   const event = {
-//     id: Math.random()
-//       .toString(36)
-//       .slice(2),
-//     ...req.body
-//   };
-//   events.push(event);
-//   res.json(event);
-// });
-
 app.patch("/api/events", (req, res) => {
   /** @type {any[]} */
   const data = req.body;
 
   data.forEach(e => {
-    const idx = events.findIndex(e2 => e.id === e2.id);
-    if (idx !== -1) {
-      events.splice(idx, 1, e);
+    const { _state, ...event } = e;
+    if (_state === "new") {
+      events.push(event);
+    } else if (_state === "modified") {
+      events.splice(
+        events.findIndex(e2 => event.id === e2.id),
+        1,
+        event
+      );
+    } else if (_state === "removed") {
+      events.splice(
+        events.findIndex(e2 => event.id === e2.id),
+        1
+      );
     } else {
-      events.push(e);
+      console.warn(`Unknown event state '${e._state}'`);
     }
   });
 

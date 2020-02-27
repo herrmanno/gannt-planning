@@ -27,15 +27,11 @@ function scaleEvents(args: Args): any {
         const { ids, amount, direction } = args
         const data = getState().data.events
 
-        const events = data.slice().map(item => {
-            if (ids.includes(item.id)) {
-                return {
-                    ...item,
-                    start: direction === "left" ? addDays(item.start, amount) : item.start,
-                    end: direction === "right" ? addDays(item.end, amount) : item.end,
-                }
-            } else {
-                return item
+        const events = data.filter(item => ids.includes(item.id)).map(item => {
+            return {
+                ...item,
+                start: direction === "left" ? addDays(item.start, amount) : item.start,
+                end: direction === "right" ? addDays(item.end, amount) : item.end,
             }
         }).sort((a, b) => {
             return compareAsc(a.start, b.start)

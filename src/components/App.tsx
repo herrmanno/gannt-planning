@@ -12,9 +12,9 @@ import Project from "../Project"
 export default App
 
 type Props = {
-    events: Event[]
     users: User[]
     projects: Project[]
+    hasChanges: boolean
 
     selectedEventID?: string
     onSelectEvent(id: string): any
@@ -35,7 +35,7 @@ function App(props: Props) {
     return (
         <>
             <ControlBar />
-            <button onClick={props.onCommitEvents}>Commit</button>
+            <button disabled={!props.hasChanges} onClick={props.onCommitEvents}>Commit</button>
             <select
                 value={props.additionalLaneCategory}
                 onChange={e => props.setAdditionalLaneCategory(e.currentTarget.value)}

@@ -26,7 +26,7 @@ function commitEvents(): any {
         await fetch("http://localhost:8080/api/events", {
             method: "PATCH",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify(events)
+            body: JSON.stringify(events.filter(e => e._state))
         })
 
         dispatch({

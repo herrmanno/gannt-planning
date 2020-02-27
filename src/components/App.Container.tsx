@@ -34,7 +34,9 @@ export default class AppContainer extends ReduxContainer(App)<ReduxState, {}, St
     getChildProps(_props: any, state: State, reduxState: ReduxState) {
         return {
             ...state,
-            ...reduxState.data,
+            users: reduxState.data.users,
+            projects: reduxState.data.projects,
+            hasChanges: reduxState.data.events.some((e: any) => !!e._state),
             onSelectEvent: this.onSelectEvent,
             onCommitEvents: this.onCommitEvents,
             additionalLaneCategory: reduxState.ui.additionalLaneCategory,

@@ -26,15 +26,11 @@ function moveEvents(args: Args): any {
         const { ids, amount } = args
         const data = getState().data.events
 
-        const events = data.slice().map(item => {
-            if (ids.includes(item.id)) {
-                return {
-                    ...item,
-                    start: addDays(item.start, amount),
-                    end: addDays(item.end, amount),
-                }
-            } else {
-                return item
+        const events = data.filter(item => ids.includes(item.id)).map(item => {
+            return {
+                ...item,
+                start: addDays(item.start, amount),
+                end: addDays(item.end, amount),
             }
         }).sort((a, b) => {
             return compareAsc(a.start, b.start)
