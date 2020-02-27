@@ -24,7 +24,7 @@ type State = {
     cursorDate: Date
     cursorRow: number
     selectedItemIDs: string[]
-    dragging?: { id: string, startX: number, handle?: "left" | "right", startDate?: Date }
+    dragging?: { rowIndex: number, id?: string, startX: number, handle?: "left" | "right", startDate?: Date }
 }
 
 export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Props, State> {
@@ -44,10 +44,11 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
         if (e.button === 0 /* left button */) {
             this.setState({
                 dragging: {
+                    rowIndex: +(e.currentTarget as HTMLElement).dataset["rowIndex"],
                     id: (e.currentTarget as HTMLElement).dataset["itemid"],
                     handle: (e.target as HTMLElement).dataset["handle"] as any,
                     startX: e.clientX,
-                    startDate: new Date((e.currentTarget as HTMLElement).dataset["date"])
+                    startDate: new Date((e.currentTarget as HTMLElement).dataset["date"]),
                 }
             })
 
@@ -141,7 +142,8 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
             data: buildData(
                 eventsArray,
                 state.dragging
-                    ? { id: state.dragging.id, row: getRowOfItem(state.dragging.id, this.lastChildProps.data) }
+                    // ? { id: state.dragging.id, row: getRowOfItem(state.dragging.id, this.lastChildProps.data) }
+                    ? { id: state.dragging.id, row: state.dragging.rowIndex }
                     : undefined),
             onMouseDown: this.onMouseDown,
             onDoubleClick: this.onDoubleClick,

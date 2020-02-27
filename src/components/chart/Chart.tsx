@@ -43,12 +43,13 @@ export default function Chart(props: Props) {
                 {props.data.map((rowData, idx) =>
                     <Row
                         key={idx}
+                        index={idx}
                         {...props}
                         data={rowData}
                         onMouseDown={props.onMouseDown}
                         onDoubleClick={props.onDoubleClick} />
                 )}
-                <Row {...props} data={[]} />
+                <Row index={props.data.length} {...props} data={[]} />
                 {/* <Cursor
                     date={props.cursorDate}
                     row={props.cursorRow}
@@ -62,6 +63,7 @@ export default function Chart(props: Props) {
 
 
 type RowProps = {
+    index: number
     startDate: Date
     numDays: number
     cellWidth: number
@@ -87,6 +89,7 @@ function Row(props: RowProps) {
         {new Array(props.numDays).fill(0).map((_, idx) =>
             <Cell
                 key={addDays(props.startDate, idx).toString()}
+                rowIndex={props.index}
                 date={addDays(props.startDate, idx)}
                 cellWidth={props.cellWidth}
                 onMouseDown={props.onMouseDown} />
@@ -94,6 +97,7 @@ function Row(props: RowProps) {
         {props.data.map(itemData =>
             <Item
                 key={itemData.id}
+                rowIndex={props.index}
                 startDate={props.startDate}
                 cellWidth={props.cellWidth}
                 selected={props.selectedItemIDs.includes(itemData.id)}
@@ -106,6 +110,7 @@ function Row(props: RowProps) {
 
 
 type CellProps = {
+    rowIndex: number
     date: Date
     cellWidth: number
     onMouseDown: React.MouseEventHandler
@@ -127,6 +132,7 @@ function Cell(props: CellProps) {
         <div
             key={dateString}
             data-date={props.date}
+            data-row-index={props.rowIndex}
             style={cellStyle}
             onMouseDown={props.onMouseDown}
         />
@@ -134,6 +140,7 @@ function Cell(props: CellProps) {
 }
 
 type ItemProps = {
+    rowIndex: number
     startDate: Date
     cellWidth: number
     selected: boolean
@@ -185,6 +192,7 @@ function Item(props: ItemProps) {
         <div
             style={style}
             data-itemid={props.data.id}
+            data-row-index={props.rowIndex}
             onMouseDown={props.onMouseDown}
             onDoubleClick={props.onDoubleClick}
         >
