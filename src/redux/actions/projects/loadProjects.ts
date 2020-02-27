@@ -16,7 +16,7 @@ interface LoadProjects extends Action {
 
 function loadProjects(): any {
     return async (dispatch: Function) => {
-        const res = await fetch("http://localhost:8080/api/projects")
+        const res = await fetch(`${process.env.SERVER_URL}/api/projects`)
         const projects = await res.json()
 
         dispatch({

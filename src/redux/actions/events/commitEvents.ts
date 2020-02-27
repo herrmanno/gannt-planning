@@ -23,7 +23,7 @@ function commitEvents(): any {
             }
         })
 
-        await fetch("http://localhost:8080/api/events", {
+        await fetch(`${process.env.SERVER_URL}/api/events`, {
             method: "PATCH",
             headers: { "content-type": "application/json" },
             body: JSON.stringify(events.filter(e => e._state))

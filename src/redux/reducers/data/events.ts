@@ -24,7 +24,6 @@ function reducer(state = defaultState, action: Action): ReducerState {
             return parsedData
         }
         case "CREATE_EVENT": {
-            console.dir([...state, action.payload.event])
             return [...state, updateEventState("new")(action.payload.event)]
         }
         case "REMOVE_EVENT": {
