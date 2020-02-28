@@ -1,0 +1,20 @@
+.sort-select-container {
+  margin: 0px 8px;
+}
+
+.sort-select__dropdown {
+  position: absolute;
+  width: 140px;
+  z-index: 4;
+  padding: 8px;
+  background: teal;
+  border-radius: 4px;
+  box-shadow: 5px 5px 10px 0px lightgrey;
+}
+
+.sort-select__dropdown__option {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin: 8px 0px;
+}

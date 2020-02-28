@@ -1,0 +1,19 @@
+@import "../../../style/theme";
+
+.date-header {
+  height: 50px;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 3; // must be greater than item's handles
+}
+
+.date-header__cell {
+  padding: 0.25rem;
+  overflow: hidden;
+}
+
+.date-header__cell:not(:last-of-type) {
+  border-right: 1px solid $gray-100;
+}

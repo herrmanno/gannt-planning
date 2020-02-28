@@ -1,5 +1,6 @@
 import * as React from "react"
 import { addDays, format } from "date-fns"
+import "./DateHeader.scss"
 
 export default DateHeader
 
@@ -13,30 +14,25 @@ type DateHeaderProps = {
 function DateHeader(props: DateHeaderProps) {
     const rowStyle: React.CSSProperties = {
         display: "flex",
-        position: "relative",
         width: props.cellWidth * props.numDays,
-        height: props.rowHeight,
-        boxSizing: "border-box",
-        border: "1px solid black",
-        borderBottom: "none",
     }
 
     const cellStyle = {
-        border: "1px solid rgba(0, 0, 0, 0.3)",
+        // border: "1px solid rgba(0, 0, 0, 0.3)",
         width: props.cellWidth,
-        overflow: "hidden",
+        // overflow: "hidden",
     }
 
     const dates = new Array(props.numDays).fill(0).map((_, idx) => addDays(props.startDate, idx))
 
-    return <div style={rowStyle}>
+    return <div style={rowStyle} className="date-header">
         {dates.map(date =>
-            <div key={date.toString()} style={cellStyle}>
-                {props.cellWidth <= 50 ? (
+            <div key={date.toString()} style={cellStyle} className="date-header__cell">
+                {props.cellWidth <= 70 ? (
                     <>
-                        {format(date, "dd")}
+                        {date.toLocaleDateString(navigator.language, { weekday: "short" })}
                         <br />
-                        {date.toLocaleDateString(navigator.language, { month: "short" })}
+                        {format(date, "dd")}
                     </>
                 ) : props.cellWidth <= 120 ? (
                     <>

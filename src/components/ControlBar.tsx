@@ -1,4 +1,5 @@
 import * as React from "react"
+import "./ControlBar.scss"
 
 type Props = {
     onMoveViewToPast(): any
@@ -10,10 +11,10 @@ type Props = {
 export default function ControlBar(props: Props) {
     return (
         <div>
-            <button onClick={props.onMoveViewToPast}>{"<"}</button>
-            <button onClick={props.onExtendView}>{"<-->"}</button>
-            <button onClick={props.onReduceView}>{">--<"}</button>
-            <button onClick={props.onMoveViewToFuture}>{">"}</button>
+            <button className="icon-button material-icons" onClick={props.onMoveViewToPast}>arrow_left</button>
+            <button className="icon-button material-icons control-bar-button--fold" onClick={props.onExtendView}>unfold_less</button>
+            <button className="icon-button material-icons control-bar-button--fold" onClick={props.onReduceView}>unfold_more</button>
+            <button className="icon-button material-icons" onClick={props.onMoveViewToFuture}>arrow_right</button>
         </div>
     )
 }

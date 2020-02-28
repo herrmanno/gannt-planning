@@ -1,6 +1,7 @@
 import * as React from "react"
 import Event from "../Event"
-import { format, parse } from "date-fns"
+import { format, parse, isValid } from "date-fns"
+import "./EventEditDialog.scss"
 
 export default EventEditDialog
 
@@ -15,24 +16,14 @@ type Props = {
 
 function EventEditDialog(props: Props) {
     const style: React.CSSProperties = {
-        position: "fixed",
-        top: "10%",
-        left: "20%",
-        right: "20%",
-        bottom: "20%",
+        position: "absolute",
+        top: "0",
+        right: "0%",
+        bottom: "00%",
+        width: "300px",
         zIndex: 3,
         background: "white",
         boxShadow: "0px 0px 10px 10px rgba(0,0,0,.2)",
-    }
-
-    const styleBackdrop: React.CSSProperties = {
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 2,
-        background: "0px 0px 10px 10px rgba(0,0,0,.1)",
     }
 
     const onChangeTitle = e => props.onChangeEvent({ title: e.currentTarget.value })
@@ -41,9 +32,19 @@ function EventEditDialog(props: Props) {
 
     const onChangeProject = e => props.onChangeEvent({ projectID: e.currentTarget.value })
 
-    const onChangeStart = e => props.onChangeEvent({ start: parse(e.currentTarget.value, "yyyy-MM-dd", 0) })
+    const onChangeStart = e => {
+        const start = parse(e.currentTarget.value, "yyyy-MM-dd", 0)
+        if (isValid(start)) {
+            props.onChangeEvent({ start })
+        }
+    }
 
-    const onChangeEnd = e => props.onChangeEvent({ end: parse(e.currentTarget.value, "yyyy-MM-dd", 0) })
+    const onChangeEnd = e => {
+        const end = parse(e.currentTarget.value, "yyyy-MM-dd", 0)
+        if (isValid(end)) {
+            props.onChangeEvent({ end })
+        }
+    }
 
     const onRemove = () => {
         props.onRemoveEvent(props.event.id)
@@ -57,41 +58,50 @@ function EventEditDialog(props: Props) {
     }
 
     return (
-        <div style={styleBackdrop} onClick={onCancel}>
-            <form style={style}>
-                <h1>Event</h1>
-                <label>Title</label>
-                <input value={props.event.title} onChange={onChangeTitle} />
-                <br />
-                <label>Start</label>
-                <input
-                    type="date"
-                    value={format(props.event.start, "yyyy-MM-dd")}
-                    onChange={onChangeStart} />
-                <br />
-                <label>End</label>
-                <input
-                    type="date"
-                    value={format(props.event.end, "yyyy-MM-dd")}
-                    onChange={onChangeEnd} />
-                <label>Project</label>
-                <select value={props.event.projectID} onChange={onChangeProject}>
-                    <option value={null}></option>
-                    {props.projects.map(project =>
-                        <option key={project.id} value={project.id} label={project.name} />
-                    )}
-                </select>
-                <br />
-                <label>Owner</label>
-                <select value={props.event.userID} onChange={onChangeUser}>
-                    <option value={null}></option>
-                    {props.users.map(user =>
-                        <option key={user.id} value={user.id}>{user.name}</option>
-                    )}
-                </select>
-                <br />
-                <button onClick={onRemove}>Remove</button>
-            </form>
-        </div>
+        <form className="event-dialog" style={style}>
+            <button className="icon-button material-icons event-dialog__save-button" onClick={onCancel} children="close" />
+            <label>Title</label>
+            <input className="event-dialog__title-input" value={props.event.title} onChange={onChangeTitle} />
+            <br />
+            <label>Start</label>
+            <input
+                className="event-dialog__input"
+                type="date"
+                value={format(props.event.start, "yyyy-MM-dd")}
+                onChange={onChangeStart} />
+            <br />
+            <label>End</label>
+            <input
+                className="event-dialog__input"
+                type="date"
+                value={format(props.event.end, "yyyy-MM-dd")}
+                onChange={onChangeEnd} />
+            <br />
+            <label>Project</label>
+            <select
+                className="event-dialog__select"
+                value={props.event.projectID}
+                onChange={onChangeProject}
+            >
+                <option value={null}></option>
+                {props.projects.map(project =>
+                    <option key={project.id} value={project.id} label={project.name} />
+                )}
+            </select>
+            <br />
+            <label>Owner</label>
+            <select
+                className="event-dialog__select"
+                value={props.event.userID}
+                onChange={onChangeUser}
+            >
+                <option value={null}></option>
+                {props.users.map(user =>
+                    <option key={user.id} value={user.id}>{user.name}</option>
+                )}
+            </select>
+            <br />
+            <button className="event-dialog__remove-button" onClick={onRemove}>Remove</button>
+        </form>
     )
 }
