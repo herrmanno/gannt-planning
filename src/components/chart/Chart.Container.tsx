@@ -3,14 +3,11 @@ import { startOfWeek, addDays, isWithinInterval } from "date-fns"
 import Chart from "./Chart"
 import buildData from "../../util/buildData"
 import ReduxState from "../../redux/State"
-import loadEvents from "../../redux/actions/events/loadEvents"
 import createEvent from "../../redux/actions/events/createEvent"
 import moveEvents from "../../redux/actions/events/moveEvents"
 import scaleEvents from "../../redux/actions/events/scaleEvents"
 import selectEvent from "../../redux/actions/ui/selectEvent"
 import Event from "../../Event"
-import loadProjects from "../../redux/actions/projects/loadProjects"
-import loadUsers from "../../redux/actions/users/loadUsers"
 import selectExistingEvents from "../../redux/selectors/selectExistingEvents"
 
 type Props = {
@@ -38,12 +35,6 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
         cursorDate: startOfWeek(new Date(), { weekStartsOn: 1 }),
         cursorRow: 0,
         selectedItemIDs: [],
-    }
-
-    componentDidMount() {
-        this.store.dispatch(loadEvents())
-        this.store.dispatch(loadUsers())
-        this.store.dispatch(loadProjects())
     }
 
     onMouseDown = (e: React.DragEvent) => {
