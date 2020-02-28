@@ -19,14 +19,11 @@ type Props = {
     hasChanges: boolean
 
     selectedEventID?: string
-    onSelectEvent(id: string): any
     onCommitEvents(): any
     additionalLaneCategory: string
 }
 
 function App(props: Props) {
-    const unselectEvent = () => props.onSelectEvent(null)
-
     const sortByName = (a, b) => a.name.localeCompare(b.name)
 
     const filterByUser = (user: User) => (event: Event) => user.id === event.userID
@@ -49,7 +46,7 @@ function App(props: Props) {
                 <DateHeader />
                 <div style={{ overflowY: "auto", overflowX: "hidden" }}>
                     {props.additionalLaneCategory === "NONE" &&
-                        <Chart title="Overview" onSelectEvent={props.onSelectEvent} />
+                        <Chart title="Overview" />
                     }
                     {props.additionalLaneCategory === "BY_PROJECT" &&
                         props.projects.sort(sortByName).map(p =>
@@ -57,7 +54,6 @@ function App(props: Props) {
                                 key={p.id}
                                 title={p.name}
                                 filter={filterByProject(p)}
-                                onSelectEvent={props.onSelectEvent}
                                 onCreateEvent={e => ({ ...e, projectID: p.id })} />
                         )
                     }
@@ -67,13 +63,12 @@ function App(props: Props) {
                                 key={u.id}
                                 title={u.name}
                                 filter={filterByUser(u)}
-                                onSelectEvent={props.onSelectEvent}
                                 onCreateEvent={e => ({ ...e, userID: u.id })} />
                         )
                     }
                 </div>
                 {props.selectedEventID &&
-                    <EventEditDialog eventID={props.selectedEventID} onCancel={unselectEvent} />
+                    <EventEditDialog eventID={props.selectedEventID} />
                 }
             </div>
             <KeyHandler />

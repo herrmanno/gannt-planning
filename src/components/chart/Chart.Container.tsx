@@ -2,12 +2,12 @@ import { ReduxContainer } from "react-class-container"
 import { startOfWeek, addDays, isWithinInterval } from "date-fns"
 import Chart from "./Chart"
 import buildData from "../../util/buildData"
-import getRowOfItem from "../../util/getRowOfItem"
 import ReduxState from "../../redux/State"
 import loadEvents from "../../redux/actions/events/loadEvents"
 import createEvent from "../../redux/actions/events/createEvent"
 import moveEvents from "../../redux/actions/events/moveEvents"
 import scaleEvents from "../../redux/actions/events/scaleEvents"
+import selectEvent from "../../redux/actions/ui/selectEvent"
 import Event from "../../Event"
 import loadProjects from "../../redux/actions/projects/loadProjects"
 import loadUsers from "../../redux/actions/users/loadUsers"
@@ -17,7 +17,6 @@ type Props = {
     title?: string
     filter?(data: Event): boolean
     onCreateEvent?(event: Partial<Event>): Partial<Event>
-    onSelectEvent(id: string): any
 }
 
 type State = {
@@ -108,9 +107,15 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
         document.removeEventListener("mouseup", this.onMouseUp)
     }
 
-    onDoubleClick = (e: React.MouseEvent) => {
-        const { itemid } = (e.currentTarget as any).dataset
-        this.props.onSelectEvent(itemid)
+    onSelectEvent = (id: string) => {
+        const { selectedEventID } = this.store.getState().ui
+        if (selectedEventID) {
+            this.store.dispatch(selectEvent(id))
+        }
+    }
+
+    onEditEvent = (id: string) => {
+        this.store.dispatch(selectEvent(id))
     }
 
     updateSelectedItems = () => {
@@ -146,7 +151,8 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
                     ? { id: state.dragging.id, row: state.dragging.rowIndex }
                     : undefined),
             onMouseDown: this.onMouseDown,
-            onDoubleClick: this.onDoubleClick,
+            onSelectEvent: this.onSelectEvent,
+            onEditEvent: this.onEditEvent,
         }
     }
 }

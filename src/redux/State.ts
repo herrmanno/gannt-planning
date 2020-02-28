@@ -12,6 +12,7 @@ type State = {
         projects: Project[]
     }
     ui: {
+        selectedEventID?: string
         startDate: Date
         numDays: number
         cellWidth: number

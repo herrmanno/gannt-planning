@@ -5,10 +5,11 @@ import patchEvent from "../redux/actions/events/patchEvent"
 import loadUsers from "../redux/actions/users/loadUsers"
 import loadProjects from "../redux/actions/projects/loadProjects"
 import removeEvent from "../redux/actions/events/removeEvent"
+import selectEvent from "../redux/actions/ui/selectEvent"
 
 type Props = {
     eventID: string
-    onCancel(): any
+    onDone(): any
 }
 
 type State = {}
@@ -28,6 +29,8 @@ export default class EventEditDialogContainer extends ReduxContainer(EventEditDi
         this.store.dispatch(removeEvent(id))
     }
 
+    onDone = () => this.store.dispatch(selectEvent(null))
+
     getChildProps(props: Props, _state: any, reduxState: ReduxState) {
         return {
             event: reduxState.data.events.find(e => e.id === props.eventID),
@@ -35,7 +38,7 @@ export default class EventEditDialogContainer extends ReduxContainer(EventEditDi
             projects: reduxState.data.projects,
             onChangeEvent: this.onChangeEvent,
             onRemoveEvent: this.onRemoveEvent,
-            onCancel: props.onCancel,
+            onDone: this.onDone,
         }
     }
 }

@@ -3,6 +3,7 @@ import { addDays, format, differenceInDays, isWeekend } from "date-fns"
 import Event from "../../Event"
 import User from "../../User"
 import Project from "../../Project"
+import "./Chart.scss"
 
 type ExtendedEvent =
     Event & {
@@ -21,7 +22,8 @@ type Props = {
     // cursorDate: Date
     // cursorRow: number
     onMouseDown: React.MouseEventHandler
-    onDoubleClick: React.MouseEventHandler
+    onSelectEvent(id: string): any
+    onEditEvent(id: string): any
 }
 
 export default function Chart(props: Props) {
@@ -47,7 +49,8 @@ export default function Chart(props: Props) {
                         {...props}
                         data={rowData}
                         onMouseDown={props.onMouseDown}
-                        onDoubleClick={props.onDoubleClick} />
+                        onSelectEvent={props.onSelectEvent}
+                        onEditEvent={props.onEditEvent} />
                 )}
                 <Row index={props.data.length} {...props} data={[]} />
                 {/* <Cursor
@@ -71,7 +74,8 @@ type RowProps = {
     data: ExtendedEvent[]
     selectedItemIDs: string[]
     onMouseDown?: React.DragEventHandler
-    onDoubleClick: React.MouseEventHandler
+    onSelectEvent(id: string): any
+    onEditEvent(id: string): any
 }
 
 function Row(props: RowProps) {
@@ -103,7 +107,8 @@ function Row(props: RowProps) {
                 selected={props.selectedItemIDs.includes(itemData.id)}
                 data={itemData}
                 onMouseDown={props.onMouseDown}
-                onDoubleClick={props.onDoubleClick} />
+                onSelectEvent={props.onSelectEvent}
+                onEditEvent={props.onEditEvent} />
         )}
     </div>
 }
@@ -146,60 +151,44 @@ type ItemProps = {
     selected: boolean
     data: ExtendedEvent
     onMouseDown: React.MouseEventHandler
-    onDoubleClick: React.MouseEventHandler
+    onSelectEvent(id: string): any
+    onEditEvent(id: string): any
 }
 
 
 function Item(props: ItemProps) {
 
     const style: React.CSSProperties = {
-        position: "absolute",
         left: differenceInDays(props.data.start, props.startDate) * props.cellWidth,
-        height: "100%",
         // treat [start, end] as inclusive interval
         width: (differenceInDays(props.data.end, props.data.start) + 1) * props.cellWidth,
-        boxSizing: "border-box",
         backgroundColor: props.data.project ? props.data.project.color : "#999",
-        border: props.selected ? "1px dashed white" : null,
-        userSelect: "none",
-    }
-
-    const titleStyle = {
-        marginLeft: "10px",
+        // border: props.selected ? "1px dashed white" : null,
     }
 
     const userStyle: React.CSSProperties = {
-        position: "absolute",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        paddingLeft: 20,
-        display: "inline-block",
         background: props.data.user && props.data.user.color,
-        fontSize: "0.6rem",
     }
 
-    const handleStyle: React.CSSProperties = {
-        position: "absolute",
-        top: 0,
-        bottom: 0,
-        zIndex: 2,
-        width: "10px",
-        background: "rgba(0,0,0,0.4)",
-    }
+    const onEditEvent = () => props.onEditEvent(props.data.id)
+    const onSelectEvent = () => props.onSelectEvent(props.data.id)
 
     return (
         <div
+            className="chart-item"
             style={style}
             data-itemid={props.data.id}
             data-row-index={props.rowIndex}
             onMouseDown={props.onMouseDown}
-            onDoubleClick={props.onDoubleClick}
+            onDoubleClick={onEditEvent}
+            onClick={onSelectEvent}
         >
-            <div data-handle="left" style={{ ...handleStyle, left: 0 }}></div>
-            <span style={titleStyle}>{props.data.title}</span>
-            {props.data.user && <span style={userStyle}>{props.data.user.name}</span>}
-            <div data-handle="right" style={{ ...handleStyle, right: 0 }}></div>
+            <div className="chart-item__handle" data-handle="left" style={{ left: 0 }}></div>
+            <span className="chart-item__title">{props.data.title}</span>
+            {props.data.user &&
+                <span className="chart-item__user" style={userStyle}>{props.data.user.name}</span>
+            }
+            <div className="chart-item__handle" data-handle="right" style={{ right: 0 }}></div>
         </div>
     )
 }

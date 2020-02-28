@@ -9,7 +9,7 @@ type Props = {
     event: Event
     users: { id: string, name: string }[]
     projects: { id: string, name: string, color: string }[]
-    onCancel(): any
+    onDone(): any
     onChangeEvent(data: Partial<Event>): any
     onRemoveEvent(id: string): any
 }
@@ -48,18 +48,18 @@ function EventEditDialog(props: Props) {
 
     const onRemove = () => {
         props.onRemoveEvent(props.event.id)
-        props.onCancel()
+        props.onDone()
     }
 
-    const onCancel = (e: React.MouseEvent) => {
+    const onDone = (e: React.MouseEvent) => {
         if (e.target === e.currentTarget) {
-            props.onCancel()
+            props.onDone()
         }
     }
 
     return (
         <form className="event-dialog" style={style}>
-            <button className="icon-button material-icons event-dialog__save-button" onClick={onCancel} children="close" />
+            <button className="icon-button material-icons event-dialog__save-button" onClick={onDone} children="close" />
             <label>Title</label>
             <input className="event-dialog__title-input" value={props.event.title} onChange={onChangeTitle} />
             <br />
