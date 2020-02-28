@@ -15,22 +15,17 @@ interface CreateEvent extends Action {
     }
 }
 
-function createEvent(data: Partial<Event>): any {
-    return async (dispatch: Function) => {
-        const event: Event = {
-            title: "Foo",
-            color: "red",
-            start: null,
-            end: null,
-            ...data,
-            id: uuid.v4(),
-        }
+function createEvent(data: Partial<Event>) {
+    const event: Event = {
+        title: "Neues Event",
+        start: null,
+        end: null,
+        ...data,
+        id: uuid.v4(),
+    }
 
-        dispatch({
-            type: CREATE_EVENT,
-            payload: { event },
-        } as CreateEvent)
-
-        return event
+    return {
+        type: CREATE_EVENT,
+        payload: { event },
     }
 }

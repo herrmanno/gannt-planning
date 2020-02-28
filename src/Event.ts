@@ -1,7 +1,6 @@
 interface BaseEvent {
     id: string
     title: string
-    color: string
     userID?: string
     projectID?: string
 }

@@ -40,7 +40,7 @@ function buildData<T extends Event>(data: T[], fixedItem: { id: string, row: num
             } else {
                 return [...acc, [item]]
             }
-        }, new Array<T[]>([], []))
+        }, new Array<T[]>(data.length).fill([]))
 
     return rows.filter(row => row.length)
 }

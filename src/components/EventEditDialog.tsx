@@ -34,14 +34,14 @@ function EventEditDialog(props: Props) {
 
     const onChangeStart = e => {
         const start = parse(e.currentTarget.value, "yyyy-MM-dd", 0)
-        if (isValid(start)) {
+        if (isValid(start) && start < props.event.end) {
             props.onChangeEvent({ start })
         }
     }
 
     const onChangeEnd = e => {
         const end = parse(e.currentTarget.value, "yyyy-MM-dd", 0)
-        if (isValid(end)) {
+        if (isValid(end) && end > props.event.start) {
             props.onChangeEvent({ end })
         }
     }

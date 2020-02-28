@@ -23,7 +23,14 @@ type State = {
     cursorDate: Date
     cursorRow: number
     selectedItemIDs: string[]
-    dragging?: { rowIndex: number, id?: string, startX: number, handle?: "left" | "right", startDate?: Date }
+    dragging?: {
+        rowIndex: number
+        id?: string
+        startX: number
+        handle?: "left" | "right"
+        startDate?: Date
+        newItem: boolean
+    }
 }
 
 export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Props, State> {
@@ -43,6 +50,7 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
         if (e.button === 0 /* left button */) {
             this.setState({
                 dragging: {
+                    newItem: true,
                     rowIndex: +(e.currentTarget as HTMLElement).dataset["rowIndex"],
                     id: (e.currentTarget as HTMLElement).dataset["itemid"],
                     handle: (e.target as HTMLElement).dataset["handle"] as any,
@@ -59,7 +67,7 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
     onMouseMove = async (e: MouseEvent) => {
         const { cellWidth } = this.store.getState().ui
         const dragging = { ...this.state.dragging }
-        const xDiff = ~~((e.clientX - dragging!.startX) / cellWidth)
+        const xDiff = ~~((e.clientX - dragging!.startX) * 2 / cellWidth)
 
         if (xDiff !== 0) {
             if (!dragging.id) {
@@ -67,14 +75,15 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
                 const eventData = onCreateEvent({
                     start: dragging.startDate,
                     end: addDays(dragging.startDate, 1),
-                    title: "BAZ",
-                    color: "#ee7733",
                 })
-                const event: any = await this.store.dispatch(createEvent(eventData))
-                dragging.id = event.id
-                dragging.handle = xDiff > 0 ? "right" : "left"
-                this.setState({
-                    dragging,
+                const createEventAction = createEvent(eventData)
+                const { id } = createEventAction.payload.event
+                this.setState(s => ({
+                    dragging: {
+                        ...s.dragging, id, handle: xDiff > 0 ? "right" : "left"
+                    }
+                }), () => {
+                    this.store.dispatch(createEventAction)
                 })
             } else {
                 if (!this.state.dragging.handle) {
@@ -99,6 +108,9 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
     }
 
     onMouseUp = () => {
+        if (this.state.dragging) {
+            this.onEditEvent(this.state.dragging.id)
+        }
         this.setState({
             dragging: null,
         })
