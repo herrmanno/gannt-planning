@@ -58,7 +58,9 @@ function reducer(state = defaultState, action: Action): ReducerState {
             ]
         }
         case "COMMIT_EVENTS": {
-            return state.map(({ _state, ...event }) => event)
+            return state
+                .filter(({ _state }) => _state !== "removed")
+                .map(({ _state, ...event }) => event)
         }
         default: return state
     }
