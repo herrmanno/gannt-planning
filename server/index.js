@@ -15,6 +15,9 @@ const users = require("./users.json");
 // @ts-ignore
 const projects = require("./projects");
 
+/* timer for writing events to fs */
+let persistEvents = null;
+
 app.use((_, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Headers", "*");
@@ -60,9 +63,16 @@ app.patch("/api/events", (req, res) => {
     }
   });
 
-  fs.writeFile(path.resolve(__dirname, "events.json"), JSON.stringify(events), err => {
-    res.status(200).end();
-  });
+  res.status(200).end();
+
+  clearTimeout(persistEvents);
+  persistEvents = setTimeout(() => {
+    fs.writeFile(path.resolve(__dirname, "events.json"), JSON.stringify(events), err => {
+      if (err) {
+        console.log(err);
+      }
+    });
+  }, 5000);
 });
 
 app.get("/api/users", (_, res) => {
