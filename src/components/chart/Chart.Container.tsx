@@ -44,7 +44,7 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
             const handle = (e.target as HTMLElement).dataset["handle"] as any
             this.setState({
                 dragging: {
-                    newItem: true,
+                    newItem: !id,
                     rowIndex: +(e.currentTarget as HTMLElement).dataset["rowIndex"],
                     id,
                     handle,
@@ -102,7 +102,7 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
     }
 
     onMouseUp = () => {
-        if (this.state.dragging && this.state.dragging.id) {
+        if (this.state.dragging && this.state.dragging.newItem && this.state.dragging.id) {
             this.onEditEvent(this.state.dragging.id)
         }
         this.setState({
