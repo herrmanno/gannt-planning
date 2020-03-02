@@ -20,21 +20,24 @@ export default class KeyHandler extends ReduxContainer(() => null) {
             if (e.keyCode === 37) {
                 await this.store.dispatch(setStartDate(d => addDays(d, -7)))
                 this.store.dispatch(loadEvents())
+                e.preventDefault()
             } else if (e.keyCode === 39) {
                 await this.store.dispatch(setStartDate(d => addDays(d, 7)))
                 this.store.dispatch(loadEvents())
+                e.preventDefault()
             } else if (e.keyCode === 38) {
                 const { numDays } = this.store.getState().ui
                 await this.store.dispatch(setNumDays(d => d + 7))
                 this.store.dispatch(setCellWidth(~~(document.body.clientWidth / (numDays + 7))))
                 this.store.dispatch(loadEvents())
+                e.preventDefault()
             } else if (e.keyCode === 40) {
                 const { numDays } = this.store.getState().ui
                 await this.store.dispatch(setNumDays(d => d - 7))
                 this.store.dispatch(setCellWidth(~~(document.body.clientWidth / (numDays - 7))))
                 this.store.dispatch(loadEvents())
+                e.preventDefault()
             }
-            e.preventDefault()
         } else if (e.metaKey) {
             // if (e.keyCode === 37) {
             //     e.preventDefault()
