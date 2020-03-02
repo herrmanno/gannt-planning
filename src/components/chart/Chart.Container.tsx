@@ -39,13 +39,16 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
 
     onMouseDown = (e: React.DragEvent) => {
         if (e.button === 0 /* left button */) {
+            const { cellWidth } = this.store.getState().ui
+            const id = (e.currentTarget as HTMLElement).dataset["itemid"]
+            const handle = (e.target as HTMLElement).dataset["handle"] as any
             this.setState({
                 dragging: {
                     newItem: true,
                     rowIndex: +(e.currentTarget as HTMLElement).dataset["rowIndex"],
-                    id: (e.currentTarget as HTMLElement).dataset["itemid"],
-                    handle: (e.target as HTMLElement).dataset["handle"] as any,
-                    startX: e.clientX,
+                    id,
+                    handle,
+                    startX: e.clientX + ((!id && handle === "right") ? cellWidth : 0),
                     startDate: new Date((e.currentTarget as HTMLElement).dataset["date"]),
                 }
             })
@@ -99,7 +102,7 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
     }
 
     onMouseUp = () => {
-        if (this.state.dragging) {
+        if (this.state.dragging && this.state.dragging.id) {
             this.onEditEvent(this.state.dragging.id)
         }
         this.setState({
