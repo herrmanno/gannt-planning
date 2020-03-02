@@ -1,0 +1,26 @@
+.save_button-container {
+  position: relative;
+  margin: 0px 8px;
+}
+
+.save-button__dropdown {
+  position: absolute;
+  right: 0px;
+  width: 180px;
+  z-index: 4;
+  padding: 8px;
+  background: teal;
+  border-radius: 4px;
+  box-shadow: 5px 5px 10px 0px lightgrey;
+}
+
+.save-button__dropdown__option {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin: 8px 0px;
+
+  & > label > * {
+    vertical-align: middle;
+  }
+}

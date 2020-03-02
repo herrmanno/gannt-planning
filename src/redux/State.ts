@@ -19,5 +19,6 @@ type State = {
         rowHeight: number
 
         additionalLaneCategory: "NONE" | "BY_PROJECT" | "BY_USER"
+        autoSave: boolean
     }
 }

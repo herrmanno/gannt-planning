@@ -7,7 +7,6 @@ import selectEvent from "../redux/actions/ui/selectEvent"
 
 type Props = {
     eventID: string
-    onDone(): any
 }
 
 type State = {}

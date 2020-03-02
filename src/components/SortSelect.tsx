@@ -26,9 +26,9 @@ type Props = {
 function SortSelect(props: Props) {
     const [open, setOpen] = React.useState(false)
     const toggle = () => setOpen(!open)
-    const chooseAll = e => (toggle(), props.setAdditionalLaneCategory("NONE"))
-    const chooseUser = e => (toggle(), props.setAdditionalLaneCategory("BY_USER"))
-    const chooseProject = e => (toggle(), props.setAdditionalLaneCategory("BY_PROJECT"))
+    const chooseAll = () => (toggle(), props.setAdditionalLaneCategory("NONE"))
+    const chooseUser = () => (toggle(), props.setAdditionalLaneCategory("BY_USER"))
+    const chooseProject = () => (toggle(), props.setAdditionalLaneCategory("BY_PROJECT"))
 
     const icon = (
         props.additionalLaneCategory === "BY_USER"
@@ -42,7 +42,6 @@ function SortSelect(props: Props) {
         <div className="sort-select-container">
             <button
                 className="icon-button material-icons"
-                style={{ display: !open ? "block" : "none" }}
                 children={icon}
                 onClick={toggle} />
             <div className="sort-select__dropdown" style={{ display: open ? "block" : "none" }}>

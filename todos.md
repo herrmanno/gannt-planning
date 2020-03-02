@@ -6,14 +6,14 @@
 - [x] Attribute autom setzen, wenn ein Event in einer speziellen Lane angelegt wird
 - [x] resizeable machen
 - [x] Optimierung der Speicherung von Änderungen
-- [ ] Design
+- [?] Design
 - [ ] Konzept für Rows von Events, vor allem beim Bewegen
 - [ ] Übersetzungen / i18n
 - [ ] Tooltips für Icons
 - [ ] NeDb für Backend nutzen
-- [ ] Farbfeld aus Event entfernen
+- [x] Farbfeld aus Event entfernen
 - [ ] Mehr Felder für Events (Beschreibung, etc.)?
-- [ ] Mehrere Use pro Event
+- [ ] Mehrere User pro Event
 - [ ] Undo/Redo für Events
 - [ ] Projektpflege & Userpflege
 - [ ] Meilensteine

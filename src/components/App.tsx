@@ -10,16 +10,15 @@ import Event from "../Event"
 import User from "../User"
 import Project from "../Project"
 import "./App.scss"
+import SaveButton from "./SaveButtonContainer"
+import AutoSaver from "./AutoSaver"
 
 export default App
 
 type Props = {
     users: User[]
     projects: Project[]
-    hasChanges: boolean
-
     selectedEventID?: string
-    onCommitEvents(): any
     additionalLaneCategory: string
 }
 
@@ -36,11 +35,7 @@ function App(props: Props) {
                 {/* <h1 className="header__heading">Gannt</h1> */}
                 <SortSelect />
                 <ControlBar />
-                <button
-                    className="icon-button material-icons"
-                    disabled={!props.hasChanges}
-                    onClick={props.onCommitEvents}
-                    children="save" />
+                <SaveButton />
             </header>
             <div style={{ position: "relative", flex: 1 }}>
                 <DateHeader />
@@ -73,6 +68,7 @@ function App(props: Props) {
             </div>
             <KeyHandler />
             <ResizeHandler />
+            <AutoSaver />
         </>
     )
 }

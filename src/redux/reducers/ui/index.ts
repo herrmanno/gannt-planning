@@ -5,6 +5,7 @@ import cellWidth from "./cellWidth"
 import rowHeight from "./rowHeight"
 import additionalLaneCategory from "./additionalLaneCategory"
 import selectedEventID from "./selectedEventID"
+import autoSave from "./autoSave"
 
 export default combineReducers({
     selectedEventID,
@@ -13,4 +14,5 @@ export default combineReducers({
     cellWidth,
     rowHeight,
     additionalLaneCategory,
+    autoSave,
 })
