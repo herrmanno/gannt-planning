@@ -4,11 +4,14 @@ import Chart from "./Chart"
 import buildData from "../../util/buildData"
 import ReduxState from "../../redux/State"
 import createEvent from "../../redux/actions/events/createEvent"
-import moveEvents from "../../redux/actions/events/moveEvents"
-import scaleEvents from "../../redux/actions/events/scaleEvents"
+import { moveEventByID } from "../../redux/actions/events/moveEvent"
+import { scaleEventByID } from "../../redux/actions/events/scaleEvent"
 import selectEvent from "../../redux/actions/ui/selectEvent"
 import Event from "../../Event"
 import selectExistingEvents from "../../redux/selectors/selectExistingEvents"
+import selectUsers from "../../redux/selectors/selectUsers"
+import selectProjects from "../../redux/selectors/selectProjects"
+import selectEvents from "../../redux/selectors/selectEvents"
 
 type Props = {
     title?: string
@@ -70,18 +73,19 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
                     start: dragging.startDate,
                     end: addDays(dragging.startDate, 1),
                 })
-                const createEventAction = createEvent(eventData)
-                const { id } = createEventAction.payload.event
-                this.setState(s => ({
-                    dragging: {
-                        ...s.dragging, id, handle: xDiff > 0 ? "right" : "left"
-                    }
-                }), () => {
-                    this.store.dispatch(createEventAction)
-                })
+                this.store.dispatch(createEvent(eventData, event => {
+                    return new Promise(resolve => {
+                        const { id } = event
+                        this.setState(s => ({
+                            dragging: {
+                                ...s.dragging, id, handle: xDiff > 0 ? "right" : "left"
+                            }
+                        }), resolve)
+                    })
+                }))
             } else {
                 if (!this.state.dragging.handle) {
-                    await this.store.dispatch(moveEvents({ ids: [dragging.id], amount: xDiff }) as any)
+                    await this.store.dispatch(moveEventByID({ id: dragging.id, amount: xDiff }))
                     this.setState({
                         dragging: {
                             ...dragging,
@@ -89,7 +93,11 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
                         },
                     })
                 } else {
-                    await this.store.dispatch(scaleEvents({ ids: [dragging.id], amount: xDiff, direction: dragging.handle }) as any)
+                    await this.store.dispatch(scaleEventByID({
+                        id: dragging.id,
+                        amount: xDiff,
+                        direction: dragging.handle
+                    }))
                     this.setState({
                         dragging: {
                             ...dragging,
@@ -125,7 +133,7 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
     }
 
     updateSelectedItems = () => {
-        const items = buildData(this.store.getState().data.events)[this.state.cursorRow] || []
+        const items = buildData(selectEvents(this.store.getState()))[this.state.cursorRow] || []
         const ids = items
             .filter(item => isWithinInterval(this.state.cursorDate, { start: item.start, end: addDays(item.end, -1) }))
             .map(item => item.id)
@@ -133,7 +141,8 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
     }
 
     getChildProps(props: Props, state: State, reduxState: ReduxState) {
-        const { users, projects } = reduxState.data
+        const users = selectUsers(reduxState)
+        const projects = selectProjects(reduxState)
         const eventsArray = selectExistingEvents(reduxState).filter(props.filter || Boolean).map(event => {
             return {
                 ...event,

@@ -4,6 +4,9 @@ import setStartDate from "../redux/actions/ui/setStartDate"
 import loadEvents from "../redux/actions/events/loadEvents"
 import setNumDays from "../redux/actions/ui/setNumDays"
 import setCellWidth from "../redux/actions/ui/setCellWidth"
+import undo from "../redux/actions/dataHistory/undo"
+import redo from "../redux/actions/dataHistory/redo"
+
 
 export default class KeyHandler extends ReduxContainer(() => null) {
     componentDidMount() {
@@ -36,6 +39,13 @@ export default class KeyHandler extends ReduxContainer(() => null) {
                 await this.store.dispatch(setNumDays(d => d - 7))
                 this.store.dispatch(setCellWidth(~~(document.body.clientWidth / (numDays - 7))))
                 this.store.dispatch(loadEvents())
+                e.preventDefault()
+            } else if (e.keyCode === 90 /* z */) {
+                if (e.shiftKey) {
+                    this.store.dispatch(redo())
+                } else {
+                    this.store.dispatch(undo())
+                }
                 e.preventDefault()
             }
         } else if (e.metaKey) {

@@ -5,6 +5,8 @@ import setCellWidth from "../redux/actions/ui/setCellWidth"
 import loadEvents from "../redux/actions/events/loadEvents"
 import loadUsers from "../redux/actions/users/loadUsers"
 import loadProject from "../redux/actions/projects/loadProjects"
+import selectUsers from "../redux/selectors/selectUsers"
+import selectProjects from "../redux/selectors/selectProjects"
 
 export default class AppContainer extends ReduxContainer(App)<ReduxState> {
 
@@ -18,8 +20,8 @@ export default class AppContainer extends ReduxContainer(App)<ReduxState> {
 
     getChildProps(_props: any, _state: any, reduxState: ReduxState) {
         return {
-            users: reduxState.data.users,
-            projects: reduxState.data.projects,
+            users: selectUsers(reduxState),
+            projects: selectProjects(reduxState),
             selectedEventID: reduxState.ui.selectedEventID,
             additionalLaneCategory: reduxState.ui.additionalLaneCategory,
         }

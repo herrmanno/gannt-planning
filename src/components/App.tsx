@@ -11,6 +11,7 @@ import User from "../User"
 import Project from "../Project"
 import "./App.scss"
 import SaveButton from "./SaveButtonContainer"
+import UndoButton from "./UndoButtonContainer"
 import AutoSaver from "./AutoSaver"
 
 export default App
@@ -35,7 +36,11 @@ function App(props: Props) {
                 {/* <h1 className="header__heading">Gannt</h1> */}
                 <SortSelect />
                 <ControlBar />
-                <SaveButton />
+                <div style={{ display: "flex" }}>
+                    <UndoButton />
+                    <span style={{ height: 24, margin: 6, border: "1px solid rgba(0, 0, 0, 0.3)" }} />
+                    <SaveButton />
+                </div>
             </header>
             <div style={{ position: "relative", flex: 1 }}>
                 <DateHeader />

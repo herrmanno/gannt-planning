@@ -1,4 +1,5 @@
 import { Action } from "redux"
+import { addUndoActionByID } from "../dataHistory/addUndoAction"
 
 export default removeEvent
 export { RemoveEvent, REMOVE_EVENT }
@@ -13,9 +14,12 @@ interface RemoveEvent extends Action {
     }
 }
 
-function removeEvent(id: string): RemoveEvent {
-    return {
-        type: REMOVE_EVENT,
-        payload: { id }
+function removeEvent(id: string) {
+    return (dispatch: Function) => {
+        dispatch(addUndoActionByID(id))
+        dispatch({
+            type: REMOVE_EVENT,
+            payload: { id }
+        } as RemoveEvent)
     }
 }

@@ -4,6 +4,8 @@ import ReduxState from "../redux/State"
 import patchEvent from "../redux/actions/events/patchEvent"
 import removeEvent from "../redux/actions/events/removeEvent"
 import selectEvent from "../redux/actions/ui/selectEvent"
+import selectUsers from "../redux/selectors/selectUsers"
+import selectProjects from "../redux/selectors/selectProjects"
 
 type Props = {
     eventID: string
@@ -25,9 +27,9 @@ export default class EventEditDialogContainer extends ReduxContainer(EventEditDi
 
     getChildProps(props: Props, _state: any, reduxState: ReduxState) {
         return {
-            event: reduxState.data.events.find(e => e.id === props.eventID),
-            users: reduxState.data.users,
-            projects: reduxState.data.projects,
+            event: reduxState.data.events[props.eventID],
+            users: selectUsers(reduxState),
+            projects: selectProjects(reduxState),
             onChangeEvent: this.onChangeEvent,
             onRemoveEvent: this.onRemoveEvent,
             onDone: this.onDone,

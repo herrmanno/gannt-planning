@@ -1,5 +1,6 @@
 import { Action } from "redux"
 import Event from "../../../Event"
+import { addUndoActionByID } from "../dataHistory/addUndoAction"
 
 export default patchEvent
 export { PatchEvent, PATCH_EVENT }
@@ -16,6 +17,7 @@ interface PatchEvent extends Action {
 
 function patchEvent(data: Partial<Event>): any {
     return async (dispatch: Function) => {
+        dispatch(addUndoActionByID(data.id))
         dispatch({
             type: PATCH_EVENT,
             payload: { data },

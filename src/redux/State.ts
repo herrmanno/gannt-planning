@@ -7,9 +7,13 @@ import Project from "../Project"
 type State = {
     data: {
         // TODO: refactor to { ids: string[], data: { [id: string]: Data } }
-        events: (Event & { _state?: "new" | "modified" | "removed" })[]
-        users: User[]
-        projects: Project[]
+        events: { [id: string]: (Event & { _state?: "new" | "modified" | "removed" }) }
+        users: { [id: string]: User }
+        projects: { [id: string]: Project },
+    }
+    dataHistory: {
+        undo: { id: string, event?: (Event & { _state?: "new" | "modified" | "removed" }), date: number }[]
+        redo: { id: string, event?: (Event & { _state?: "new" | "modified" | "removed" }) }[]
     }
     ui: {
         selectedEventID?: string

@@ -5,12 +5,14 @@ export default reducer
 
 type ReducerState = State["data"]["users"]
 type Action = LoadUsers
-const defaultState: ReducerState = []
+const defaultState: ReducerState = {}
 
 
 function reducer(state = defaultState, action: Action): ReducerState {
     switch (action.type) {
-        case "LOAD_USERS": return action.payload.users
+        case "LOAD_USERS": {
+            return action.payload.users.reduce((acc, item) => ({ ...acc, [item.id]: item }), {})
+        }
         default: return state
     }
 }

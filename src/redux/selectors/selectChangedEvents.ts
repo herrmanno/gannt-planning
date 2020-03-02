@@ -3,5 +3,5 @@ import selectEvents from "./selectEvents"
 
 export default createSelector(
     selectEvents,
-    events => events.filter(e => e._state !== "removed")
+    events => events.filter(e => !!e._state)
 )

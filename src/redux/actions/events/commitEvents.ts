@@ -1,6 +1,7 @@
 import { Action } from "redux"
 import { format } from "date-fns"
 import ReduxState from "../../State"
+import selectChangedEvents from "../../selectors/selectChangedEvents"
 
 export default commitEvents
 export { CommitEvents, COMMIT_EVENTS }
@@ -15,7 +16,7 @@ interface CommitEvents extends Action {
 
 function commitEvents(): any {
     return async (dispatch: Function, getState: () => ReduxState) => {
-        const events = getState().data.events.map(event => {
+        const changedEvents = selectChangedEvents(getState()).map(event => {
             return {
                 ...event,
                 start: format(event.start, "yyyy-MM-dd"),
@@ -26,7 +27,7 @@ function commitEvents(): any {
         await fetch(`${process.env.SERVER_URL}/api/events`, {
             method: "PATCH",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify(events.filter(e => e._state))
+            body: JSON.stringify(changedEvents)
         })
 
         dispatch({

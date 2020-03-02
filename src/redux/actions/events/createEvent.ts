@@ -1,6 +1,7 @@
 import { Action } from "redux"
 import Event from "../../../Event"
 import uuid = require("uuid")
+import addUndoAction from "../dataHistory/addUndoAction"
 
 export default createEvent
 export { CreateEvent, CREATE_EVENT }
@@ -15,17 +16,27 @@ interface CreateEvent extends Action {
     }
 }
 
-function createEvent(data: Partial<Event>) {
-    const event: Event = {
-        title: "Neues Event",
-        start: null,
-        end: null,
-        ...data,
-        id: uuid.v4(),
-    }
+function createEvent(data: Partial<Event>, onCreate?: (event: Event) => any) {
+    return async (dispatch: Function) => {
+        const event: Event = {
+            title: "Neues Event",
+            start: null,
+            end: null,
+            ...data,
+            id: uuid.v4(),
+        }
 
-    return {
-        type: CREATE_EVENT,
-        payload: { event },
+        if (onCreate) {
+            await onCreate(event)
+        }
+
+        dispatch(addUndoAction(event.id, null))
+
+        dispatch({
+            type: CREATE_EVENT,
+            payload: { event },
+        } as CreateEvent)
+
+        return event
     }
 }
