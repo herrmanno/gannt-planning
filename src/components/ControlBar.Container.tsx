@@ -1,7 +1,7 @@
 import { ReduxContainer } from "react-class-container"
 import ControlBar from "./ControlBar"
 import ReduxState from "../redux/State"
-import { addDays } from "date-fns"
+import { addDays, startOfWeek } from "date-fns"
 import setStartDate from "../redux/actions/ui/setStartDate"
 import loadEvents from "../redux/actions/events/loadEvents"
 import setNumDays from "../redux/actions/ui/setNumDays"
@@ -41,12 +41,21 @@ export default class ControlBarContainer extends ReduxContainer(ControlBar)<Redu
         this.store.dispatch(setCellWidth(~~(document.body.clientWidth / (numDays - 7))))
     }
 
+    onResetView = async () => {
+        const numDays = 28
+        await this.store.dispatch(setNumDays(() => numDays))
+        await this.store.dispatch(setStartDate(() => startOfWeek(new Date(), { weekStartsOn: 1 })))
+        this.store.dispatch(this.store.dispatch(setCellWidth(~~(document.body.clientWidth / numDays))))
+        this.loadEvents()
+    }
+
     getChildProps() {
         return {
             onMoveViewToPast: this.onMoveViewToPast,
             onMoveViewToFuture: this.onMoveViewToFuture,
             onExtendView: this.onExtendView,
             onReduceView: this.onReduceView,
+            onResetView: this.onResetView,
         }
     }
 
