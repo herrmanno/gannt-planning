@@ -15,7 +15,8 @@ export default class KeyHandler extends ReduxContainer(() => null) {
     }
 
     onKeyDown = async (e: KeyboardEvent) => {
-        if (e.shiftKey) {
+        const target: any = e.target
+        if (e.metaKey && target.type !== "input" && target.type !== "textarea") {
             if (e.keyCode === 37) {
                 await this.store.dispatch(setStartDate(d => addDays(d, -7)))
                 this.store.dispatch(loadEvents())
@@ -33,6 +34,7 @@ export default class KeyHandler extends ReduxContainer(() => null) {
                 this.store.dispatch(setCellWidth(~~(document.body.clientWidth / (numDays - 7))))
                 this.store.dispatch(loadEvents())
             }
+            e.preventDefault()
         } else if (e.metaKey) {
             // if (e.keyCode === 37) {
             //     e.preventDefault()
