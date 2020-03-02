@@ -1,14 +1,16 @@
 import * as React from "react"
 import Event from "../Event"
 import { format, parse, isValid } from "date-fns"
+import User from "../User"
+import Project from "../Project"
 import "./EventEditDialog.scss"
 
 export default EventEditDialog
 
 type Props = {
     event: Event
-    users: { id: string, name: string }[]
-    projects: { id: string, name: string, color: string }[]
+    users: User[]
+    projects: Project[]
     onDone(): any
     onChangeEvent(data: Partial<Event>): any
     onRemoveEvent(id: string): any
@@ -27,6 +29,8 @@ function EventEditDialog(props: Props) {
     }
 
     const onChangeTitle = e => props.onChangeEvent({ title: e.currentTarget.value })
+
+    const onChangeDescription = e => props.onChangeEvent({ description: e.currentTarget.value })
 
     const onChangeUser = e => props.onChangeEvent({ userID: e.currentTarget.value })
 
@@ -60,24 +64,24 @@ function EventEditDialog(props: Props) {
     return (
         <form className="event-dialog" style={style}>
             <button className="icon-button material-icons event-dialog__save-button" onClick={onDone} children="close" />
-            <label>Title</label>
+            <label className="event-dialog__label" children="Name" />
             <input className="event-dialog__title-input" value={props.event.title} onChange={onChangeTitle} />
             <br />
-            <label>Start</label>
+            <label className="event-dialog__label" children="Start" />
             <input
                 className="event-dialog__input"
                 type="date"
                 value={format(props.event.start, "yyyy-MM-dd")}
                 onChange={onChangeStart} />
             <br />
-            <label>End</label>
+            <label className="event-dialog__label" children="Ende" />
             <input
                 className="event-dialog__input"
                 type="date"
                 value={format(props.event.end, "yyyy-MM-dd")}
                 onChange={onChangeEnd} />
             <br />
-            <label>Project</label>
+            <label className="event-dialog__label" children="Projekt" />
             <select
                 className="event-dialog__select"
                 value={props.event.projectID}
@@ -89,7 +93,7 @@ function EventEditDialog(props: Props) {
                 )}
             </select>
             <br />
-            <label>Owner</label>
+            <label className="event-dialog__label" children="Besitzer" />
             <select
                 className="event-dialog__select"
                 value={props.event.userID}
@@ -101,7 +105,14 @@ function EventEditDialog(props: Props) {
                 )}
             </select>
             <br />
-            <button className="event-dialog__remove-button" onClick={onRemove}>Remove</button>
+            <label className="event-dialog__label" children="Beschreibung" />
+            <textarea
+                className="event-dialog__textarea"
+                rows={8}
+                value={props.event.description || ""}
+                onChange={onChangeDescription} />
+            <br />
+            <button className="event-dialog__remove-button" onClick={onRemove} children="Löschen" />
         </form>
     )
 }

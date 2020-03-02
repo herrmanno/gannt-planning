@@ -11,10 +11,11 @@
 }
 
 .event-dialog__input,
+.event-dialog__textarea,
 .event-dialog__select {
   display: block;
   height: 2rem;
-  min-width: 150px;
+  width: 100%;
   padding: 4px;
   font-size: 1rem;
   border: none;
@@ -22,11 +23,20 @@
   background: #ddd;
 }
 
+.event-dialog__textarea {
+  height: initial;
+  resize: none;
+}
+
 .event-dialog__title-input {
   @extend .event-dialog__input;
   height: 3rem;
-  width: 100%;
   font-size: 1.5rem;
+}
+
+.event-dialog__label {
+  display: inline-block;
+  margin-bottom: 4px;
 }
 
 .event-dialog__remove-button {
