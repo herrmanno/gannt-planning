@@ -70,6 +70,7 @@ function reducer(state = defaultState, action: Action): ReducerState {
         case "COMMIT_EVENTS": {
             return Object.keys(state)
                 .map(id => state[id])
+                .filter(Boolean)
                 .filter(event => event._state !== "removed")
                 .map(({ _state, ...event }) => event)
                 .reduce((acc, item) => ({ ...acc, [item.id]: item }), {})
