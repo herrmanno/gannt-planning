@@ -14,6 +14,7 @@ interface SetAdditionalLaneCategory extends Action {
 }
 
 function setAdditionalLaneCategory(category: "NONE" | "BY_PROJECT" | "BY_USER"): SetAdditionalLaneCategory {
+    localStorage.setItem("group_by", category)
     return {
         type: SET_ADDITIONAL_LANE_CATEGORY,
         payload: { category }

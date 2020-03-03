@@ -5,7 +5,7 @@ export default reducer
 
 type ReducerState = State["ui"]["additionalLaneCategory"]
 type Action = SetAdditionalLaneCategory
-const defaultState: ReducerState = "NONE"
+const defaultState: ReducerState = localStorage.getItem("group_by") as any || "NONE"
 
 
 function reducer(state = defaultState, action: Action): ReducerState {
