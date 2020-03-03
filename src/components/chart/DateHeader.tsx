@@ -1,5 +1,5 @@
 import * as React from "react"
-import { addDays, format } from "date-fns"
+import { addDays, format, isToday, getWeek } from "date-fns"
 import "./DateHeader.scss"
 
 export default DateHeader
@@ -17,38 +17,69 @@ function DateHeader(props: DateHeaderProps) {
         width: props.cellWidth * props.numDays,
     }
 
-    const cellStyle = {
-        // border: "1px solid rgba(0, 0, 0, 0.3)",
-        width: props.cellWidth,
-        // overflow: "hidden",
-    }
-
     const dates = new Array(props.numDays).fill(0).map((_, idx) => addDays(props.startDate, idx))
+    const weeks = dates.filter((date, idx) => idx % 7 == 0)
 
-    return <div style={rowStyle} className="date-header">
-        {dates.map(date =>
-            <div key={date.toString()} style={cellStyle} className="date-header__cell">
-                {props.cellWidth <= 70 ? (
-                    <>
-                        {date.toLocaleDateString(navigator.language, { weekday: "short" })}
-                        <br />
-                        {format(date, "dd")}
-                    </>
-                ) : props.cellWidth <= 120 ? (
-                    <>
-                        {date.toLocaleDateString(navigator.language, { weekday: "short" })}
-                        <br />
-                        {format(date, "dd.")}{"\u00a0"}{date.toLocaleDateString(navigator.language, { month: "short" })}
-                    </>
-                ) : true ? (
-                    <>
-                        {date.toLocaleDateString(navigator.language, { weekday: "long" })}
-                        <br />
-                        {format(date, "dd.")}{"\u00a0"}{date.toLocaleDateString(navigator.language, { month: "long" })}
-                    </>
-                ) : null}
-
+    return (
+        <React.Fragment>
+            <div style={rowStyle} className="date-header--weeks">
+                {weeks.map(date =>
+                    <WeekCell key={date.toString()} date={date} cellWidth={props.cellWidth} />
+                )}
             </div>
-        )}
-    </div>
+            <div style={rowStyle} className="date-header">
+                {dates.map(date =>
+                    <DateCell key={date.toString()} date={date} cellWidth={props.cellWidth} />
+                )}
+            </div>
+        </React.Fragment>
+    )
+}
+
+function WeekCell(props: { date: Date, cellWidth: number }) {
+    const cellStyle = {
+        width: 7 * props.cellWidth,
+    }
+    const weekNumber = getWeek(props.date)
+    const from = props.date.getDate() + ". " + props.date.toLocaleDateString("de", { month: "long" })
+    const to = addDays(props.date, 7).getDate() + ". " + addDays(props.date, 7).toLocaleDateString("de", { month: "long" })
+
+    return (
+        <div className="date-header__cell" style={cellStyle}>
+            KW {weekNumber} ({from} - {to})
+        </div>
+    )
+
+}
+
+function DateCell(props: { date: Date, cellWidth: number }) {
+    const cellStyle = {
+        width: props.cellWidth,
+    }
+    const { date, cellWidth } = props
+    const className = isToday(date) ? "date-header__cell--today" : "date-header__cell"
+
+    return (
+        <div className={className} style={cellStyle}>
+            {cellWidth <= 70 ? (
+                <>
+                    {date.toLocaleDateString(navigator.language, { weekday: "short" })}
+                    <br />
+                    {format(date, "dd")}
+                </>
+            ) : cellWidth <= 120 ? (
+                <>
+                    {date.toLocaleDateString(navigator.language, { weekday: "short" })}
+                    <br />
+                    {format(date, "dd.")}{"\u00a0"}{date.toLocaleDateString(navigator.language, { month: "short" })}
+                </>
+            ) : true ? (
+                <>
+                    {date.toLocaleDateString(navigator.language, { weekday: "long" })}
+                    <br />
+                    {format(date, "dd.")}{"\u00a0"}{date.toLocaleDateString(navigator.language, { month: "long" })}
+                </>
+            ) : null}
+        </div>
+    )
 }

@@ -7,11 +7,23 @@
   z-index: 3; // must be greater than item's handles
 }
 
+.date-header--weeks {
+  @extend .date-header;
+  height: 30px;
+}
+
 .date-header__cell {
   padding: 0.25rem;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .date-header__cell:not(:last-of-type) {
   border-right: 1px solid lightgray;
+}
+
+.date-header__cell--today {
+  @extend .date-header__cell;
+
+  font-weight: bold;
 }

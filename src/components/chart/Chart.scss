@@ -1,3 +1,22 @@
+.chart-row {
+  border-bottom: none;
+}
+
+.chart-row-header {
+  padding: 4px 8px;
+  background: #c4d1d6;
+}
+
+.chart-cell {
+  border: 1px solid black;
+}
+
+.chart-cell--weekend {
+  @extend .chart-cell;
+
+  background-color: #e7eff3;
+}
+
 .chart-item {
   position: absolute;
   height: 100%;
@@ -5,6 +24,7 @@
   border-radius: 4px;
   user-select: none;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .chart-item__title {

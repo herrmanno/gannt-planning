@@ -35,13 +35,14 @@ export default function Chart(props: Props) {
         height: ~~(props.rowHeight / 1.5),
         width: props.numDays * props.cellWidth,
         boxSizing: "border-box",
-        background: "lightgrey",
     }
 
     return (
         <>
             <div style={containerStyle}>
-                {props.title && <div style={headerStyle}>{props.title}</div>}
+                {props.title &&
+                    <div className="chart-row-header" style={headerStyle}>{props.title}</div>
+                }
                 {props.data.map((rowData, idx) =>
                     <Row
                         key={idx}
@@ -85,11 +86,9 @@ function Row(props: RowProps) {
         width: props.cellWidth * props.numDays,
         height: props.rowHeight,
         boxSizing: "border-box",
-        border: "1px solid black",
-        borderBottom: "none",
     }
 
-    return <div style={rowStyle}>
+    return <div className="chart-row" style={rowStyle}>
         {new Array(props.numDays).fill(0).map((_, idx) =>
             <Cell
                 key={addDays(props.startDate, idx).toString()}
@@ -127,8 +126,6 @@ function Cell(props: CellProps) {
         width: props.cellWidth,
         flexBasis: props.cellWidth,
         boxSizing: "border-box",
-        border: "1px solid black",
-        background: isWeekend(props.date) ? "lightgrey" : null,
     }
 
     const dateString = format(props.date, "dd MM")
@@ -138,6 +135,7 @@ function Cell(props: CellProps) {
             key={dateString}
             data-date={props.date}
             data-row-index={props.rowIndex}
+            className={isWeekend(props.date) ? "chart-cell--weekend" : "chart-cell"}
             style={cellStyle}
             onMouseDown={props.onMouseDown}
         />
