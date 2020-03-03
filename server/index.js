@@ -6,6 +6,8 @@ const { parse, isWithinInterval } = require("date-fns");
 
 const app = express();
 
+app.use(express.static("dist"));
+
 app.use(express.json());
 
 // @ts-ignore
