@@ -36,9 +36,10 @@ export default class KeyHandler extends ReduxContainer(() => null) {
                 e.preventDefault()
             } else if (e.keyCode === 40) {
                 const { numDays } = this.store.getState().ui
-                await this.store.dispatch(setNumDays(d => d - 7))
-                this.store.dispatch(setCellWidth(document.body.clientWidth / (numDays - 7)))
-                this.store.dispatch(loadEvents())
+                if (numDays > 7) {
+                    await this.store.dispatch(setNumDays(d => d - 7))
+                    this.store.dispatch(setCellWidth(document.body.clientWidth / (numDays - 7)))
+                }
                 e.preventDefault()
             } else if (e.keyCode === 90 /* z */) {
                 if (e.shiftKey) {

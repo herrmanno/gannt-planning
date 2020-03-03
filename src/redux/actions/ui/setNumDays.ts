@@ -16,7 +16,7 @@ interface SetNumDays extends Action {
 
 function setNumDays(modify: (number) => number): any {
     return (dispatch: Function, getState: () => ReduxState) => {
-        const numDays = modify(getState().ui.numDays)
+        const numDays = Math.max(7, modify(getState().ui.numDays))
         dispatch({
             type: SET_NUMDAYS,
             payload: { numDays }
