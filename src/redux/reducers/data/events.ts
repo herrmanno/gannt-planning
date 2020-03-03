@@ -44,7 +44,7 @@ function reducer(state = defaultState, action: Action): ReducerState {
         case "REMOVE_EVENT": {
             return {
                 ...state,
-                [action.payload.id]: null
+                [action.payload.id]: updateEventState("removed")(state[action.payload.id])
             }
         }
         case "PATCH_EVENT":
@@ -79,7 +79,7 @@ function reducer(state = defaultState, action: Action): ReducerState {
         case "REDO": {
             return {
                 ...state,
-                [action.payload.id]: action.payload.event
+                [action.payload.id]: updateEventState("modified")(action.payload.event)
             }
         }
         default: return state
