@@ -1,5 +1,5 @@
 .chart-row {
-  border-bottom: none;
+  border-bottom: 1px solid #b0b8c3;
 }
 
 .chart-row-header {
@@ -7,8 +7,8 @@
   background: #c4d1d6;
 }
 
-.chart-cell {
-  border: 1px solid black;
+.chart-cell:not(:last-child) {
+  border-right: 1px solid #b0b8c3;
 }
 
 .chart-cell--weekend {
