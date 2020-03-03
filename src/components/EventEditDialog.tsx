@@ -65,21 +65,7 @@ function EventEditDialog(props: Props) {
         <form className="event-dialog" style={style}>
             <button className="icon-button material-icons event-dialog__save-button" onClick={onDone} children="close" />
             <label className="event-dialog__label" children="Name" />
-            <input className="event-dialog__title-input" value={props.event.title} onChange={onChangeTitle} />
-            <br />
-            <label className="event-dialog__label" children="Start" />
-            <input
-                className="event-dialog__input"
-                type="date"
-                value={format(props.event.start, "yyyy-MM-dd")}
-                onChange={onChangeStart} />
-            <br />
-            <label className="event-dialog__label" children="Ende" />
-            <input
-                className="event-dialog__input"
-                type="date"
-                value={format(props.event.end, "yyyy-MM-dd")}
-                onChange={onChangeEnd} />
+            <input className="event-dialog__title-input" autoFocus value={props.event.title} onChange={onChangeTitle} />
             <br />
             <label className="event-dialog__label" children="Projekt" />
             <select
@@ -104,6 +90,20 @@ function EventEditDialog(props: Props) {
                     <option key={user.id} value={user.id}>{user.name}</option>
                 )}
             </select>
+            <br />
+            <label className="event-dialog__label" children="Start" />
+            <input
+                className="event-dialog__input"
+                type="date"
+                value={format(props.event.start, "yyyy-MM-dd")}
+                onChange={onChangeStart} />
+            <br />
+            <label className="event-dialog__label" children="Ende" />
+            <input
+                className="event-dialog__input"
+                type="date"
+                value={format(props.event.end, "yyyy-MM-dd")}
+                onChange={onChangeEnd} />
             <br />
             <label className="event-dialog__label" children="Beschreibung" />
             <textarea
