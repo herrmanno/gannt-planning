@@ -64,7 +64,7 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
     onMouseMove = async (e: MouseEvent) => {
         const { cellWidth } = this.store.getState().ui
         const dragging = { ...this.state.dragging }
-        const xDiff = ~~((e.clientX - dragging!.startX) * 2 / cellWidth)
+        const xDiff = ~~((e.clientX - dragging!.startX) * 1.2 / cellWidth)
 
         if (xDiff !== 0) {
             if (!dragging.id) {

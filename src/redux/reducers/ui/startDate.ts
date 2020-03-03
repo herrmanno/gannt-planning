@@ -1,5 +1,5 @@
 import State from "../../State"
-import { startOfWeek } from "date-fns"
+import { startOfWeek, addWeeks } from "date-fns"
 import { SetStartDate } from "../../actions/ui/setStartDate"
 
 export default reducer
@@ -7,7 +7,7 @@ export default reducer
 
 type ReducerState = State["ui"]["startDate"]
 type Action = SetStartDate
-const defaultState: ReducerState = startOfWeek(new Date(), { weekStartsOn: 1 })
+const defaultState: ReducerState = startOfWeek(addWeeks(new Date(), -1), { weekStartsOn: 1 })
 
 
 function reducer(state = defaultState, action: Action): ReducerState {

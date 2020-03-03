@@ -14,6 +14,7 @@ interface SetCellWidth extends Action {
 }
 
 function setCellWidth(cellWidth: number): SetCellWidth {
+    cellWidth = ~~(cellWidth * 100) / 100
     return {
         type: SET_CELLWIDTH,
         payload: { cellWidth }

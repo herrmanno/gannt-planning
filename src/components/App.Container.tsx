@@ -12,7 +12,7 @@ export default class AppContainer extends ReduxContainer(App)<ReduxState> {
 
     componentDidMount() {
         const { numDays } = this.store.getState().ui
-        this.store.dispatch(setCellWidth(~~(document.body.clientWidth / numDays)))
+        this.store.dispatch(setCellWidth(document.body.clientWidth / numDays))
         this.store.dispatch(loadEvents())
         this.store.dispatch(loadUsers())
         this.store.dispatch(loadProject())
