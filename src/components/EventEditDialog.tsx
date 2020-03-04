@@ -50,19 +50,12 @@ function EventEditDialog(props: Props) {
         }
     }
 
-    const onRemove = () => {
-        props.onRemoveEvent(props.event.id)
-        props.onDone()
-    }
+    const onRemove = () => props.onRemoveEvent(props.event.id)
 
-    const onDone = (e: React.MouseEvent) => {
-        if (e.target === e.currentTarget) {
-            props.onDone()
-        }
-    }
+    const onDone = (e: React.MouseEvent) => props.onDone()
 
     return (
-        <form className="event-dialog" style={style}>
+        <form className="event-dialog" style={style} onSubmit={e => e.preventDefault()}>
             <button className="icon-button material-icons event-dialog__save-button" onClick={onDone} children="close" />
             <label className="event-dialog__label" children="Name" />
             <input className="event-dialog__title-input" autoFocus value={props.event.title} onChange={onChangeTitle} />

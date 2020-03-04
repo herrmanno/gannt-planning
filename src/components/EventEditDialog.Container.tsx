@@ -27,7 +27,9 @@ export default class EventEditDialogContainer extends ReduxContainer(EventEditDi
         if (e.keyCode === 27 /* esc */) {
             this.onDone()
         } else if (e.keyCode === 46 /* entf */) {
-            this.onRemoveEvent(this.props.eventID)
+            if (!["INPUT", "TEXTAREA", "SELECT"].includes((e.target as any).tagName)) {
+                this.onRemoveEvent(this.props.eventID)
+            }
         }
     }
 

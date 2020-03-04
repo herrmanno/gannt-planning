@@ -41,7 +41,9 @@ export default class KeyHandler extends ReduxContainer(() => null) {
                     this.store.dispatch(setCellWidth(document.body.clientWidth / (numDays - 7)))
                 }
                 e.preventDefault()
-            } else if (e.keyCode === 90 /* z */) {
+            }
+        } else if (e.metaKey) {
+            if (e.keyCode === 90 /* z */) {
                 if (e.shiftKey) {
                     this.store.dispatch(redo())
                 } else {
@@ -49,7 +51,6 @@ export default class KeyHandler extends ReduxContainer(() => null) {
                 }
                 e.preventDefault()
             }
-        } else if (e.metaKey) {
             // if (e.keyCode === 37) {
             //     e.preventDefault()
             //     await this.store.dispatch(moveEvents({ ids: this.state.selectedItemIDs, amount: -1 }))
