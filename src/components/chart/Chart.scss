@@ -28,7 +28,7 @@
 }
 
 .chart-item__title {
-  padding-left: 10px;
+  padding-left: 8px;
 }
 
 .chart-item__user {
@@ -50,6 +50,24 @@
   z-index: 2;
   width: 10px;
   background: rgba(0, 0, 0, 0.2);
+
+  &[data-handle="left"] {
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0.1) 80%,
+      rgba(0, 0, 0, 0) 100%
+    );
+  }
+
+  &[data-handle="right"] {
+    background: linear-gradient(
+      270deg,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0.1) 80%,
+      rgba(0, 0, 0, 0) 100%
+    );
+  }
 }
 
 .chart-item:hover .chart-item__handle {
