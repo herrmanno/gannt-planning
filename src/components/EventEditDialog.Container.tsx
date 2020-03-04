@@ -15,12 +15,30 @@ type State = {}
 
 export default class EventEditDialogContainer extends ReduxContainer(EventEditDialog)<any, Props, State> {
 
+    componentDidMount() {
+        document.addEventListener("keydown", this.onKeyDown)
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener("keydown", this.onKeyDown)
+    }
+
+    private onKeyDown = (e: KeyboardEvent) => {
+        if (e.keyCode === 27 /* esc */) {
+            this.onDone()
+        } else if (e.keyCode === 46 /* entf */) {
+            this.onRemoveEvent(this.props.eventID)
+        }
+    }
+
     onChangeEvent = (data: object) => {
         this.store.dispatch(patchEvent({ id: this.props.eventID, ...data }))
     }
 
     onRemoveEvent = (id: string) => {
-        this.store.dispatch(removeEvent(id))
+        if (window.confirm("Event wirklich entfernern?")) {
+            this.store.dispatch(removeEvent(id))
+        }
     }
 
     onDone = () => this.store.dispatch(selectEvent(null))
