@@ -30,7 +30,7 @@ function createEvent(data: Partial<Event>, onCreate?: (event: Event) => any) {
             await onCreate(event)
         }
 
-        dispatch(addUndoAction(event.id, { ...event, _state: "removed" }))
+        dispatch(addUndoAction(event.id, null))
 
         dispatch({
             type: CREATE_EVENT,
