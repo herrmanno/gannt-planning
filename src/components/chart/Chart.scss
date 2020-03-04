@@ -12,9 +12,11 @@
 }
 
 .chart-cell--weekend {
-  @extend .chart-cell;
-
   background-color: #e7eff3;
+}
+
+.chart-cell--today:not(:last-child) {
+  border-right: 2px solid #ff67006e;
 }
 
 .chart-item {
@@ -29,11 +31,8 @@
 }
 
 .chart-item--draft {
-  @extend .chart-item;
-
   pointer-events: none;
   opacity: 0.5;
-  // mix-blend-mode: color;
 
   & > .chart-item__title,
   & > .chart-item__user,

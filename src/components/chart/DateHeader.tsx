@@ -57,7 +57,10 @@ function DateCell(props: { date: Date, cellWidth: number }) {
         width: props.cellWidth,
     }
     const { date, cellWidth } = props
-    const className = isToday(date) ? "date-header__cell--today" : "date-header__cell"
+    const className = [
+        "date-header__cell",
+        isToday(date) && "date-header__cell--today"
+    ].filter(Boolean).join(" ")
 
     return (
         <div className={className} style={cellStyle}>

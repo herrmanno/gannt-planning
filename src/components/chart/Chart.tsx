@@ -1,5 +1,5 @@
 import * as React from "react"
-import { addDays, format, differenceInDays, isWeekend } from "date-fns"
+import { addDays, format, differenceInDays, isWeekend, isToday } from "date-fns"
 import Event from "../../Event"
 import User from "../../User"
 import Project from "../../Project"
@@ -129,12 +129,18 @@ function Cell(props: CellProps) {
 
     const dateString = format(props.date, "dd MM")
 
+    const className = [
+        "chart-cell",
+        isWeekend(props.date) && "chart-cell--weekend",
+        isToday(props.date) && "chart-cell--today"
+    ].filter(Boolean).join(" ")
+
     return (
         <div
             key={dateString}
             data-date={props.date}
             data-row-index={props.rowIndex}
-            className={isWeekend(props.date) ? "chart-cell--weekend" : "chart-cell"}
+            className={className}
             style={cellStyle}
             onMouseDownCapture={props.onMouseDown}
             onMouseEnter={props.onMouseEnter}
@@ -173,10 +179,14 @@ function Item(props: ItemProps) {
         "data-row-index": props.rowIndex,
         "data-date": addDays(props.data.start, idx),
     })
+    const className = [
+        "chart-item",
+        props.draft && "chart-item--draft"
+    ].filter(Boolean).join(" ")
 
     return (
         <div
-            className={props.draft ? "chart-item--draft" : "chart-item"}
+            className={className}
             style={style}
             title={title}
             onMouseDown={props.onMouseDown}
