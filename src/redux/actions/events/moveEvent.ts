@@ -23,19 +23,21 @@ type Args = {
 
 function moveEventByID(args: Args): any {
     return (dispatch: Function, getState: () => State) => {
-        const { id, amount } = args
-        const { start, end, ...data } = getState().data.events[id]
-        const event = {
-            ...data,
-            start: addDays(start, amount),
-            end: addDays(end, amount),
+        if (args.amount !== 0) {
+            const { id, amount } = args
+            const { start, end, ...data } = getState().data.events[id]
+            const event = {
+                ...data,
+                start: addDays(start, amount),
+                end: addDays(end, amount),
+            }
+
+            dispatch(addUndoActionByID(id))
+
+            dispatch({
+                type: MOVE_EVENT,
+                payload: { event }
+            } as MoveEvent)
         }
-
-        dispatch(addUndoActionByID(id))
-
-        dispatch({
-            type: MOVE_EVENT,
-            payload: { event }
-        } as MoveEvent)
     }
 }

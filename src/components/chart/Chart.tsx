@@ -19,11 +19,11 @@ type Props = {
     title?: string
     data: ExtendedEvent[][]
     selectedItemIDs: string[]
+    draftID?: string
     // cursorDate: Date
     // cursorRow: number
     onMouseDown: React.MouseEventHandler
-    onSelectEvent(id: string): any
-    onEditEvent(id: string): any
+    onMouseEnter: React.MouseEventHandler
 }
 
 export default function Chart(props: Props) {
@@ -49,9 +49,7 @@ export default function Chart(props: Props) {
                         index={idx}
                         {...props}
                         data={rowData}
-                        onMouseDown={props.onMouseDown}
-                        onSelectEvent={props.onSelectEvent}
-                        onEditEvent={props.onEditEvent} />
+                        onMouseDown={props.onMouseDown} />
                 )}
                 <Row index={props.data.length} {...props} data={[]} />
                 {/* <Cursor
@@ -74,9 +72,9 @@ type RowProps = {
     rowHeight: number
     data: ExtendedEvent[]
     selectedItemIDs: string[]
-    onMouseDown?: React.DragEventHandler
-    onSelectEvent(id: string): any
-    onEditEvent(id: string): any
+    draftID?: string
+    onMouseDown?: React.MouseEventHandler
+    onMouseEnter?: React.MouseEventHandler
 }
 
 function Row(props: RowProps) {
@@ -95,7 +93,8 @@ function Row(props: RowProps) {
                 rowIndex={props.index}
                 date={addDays(props.startDate, idx)}
                 cellWidth={props.cellWidth}
-                onMouseDown={props.onMouseDown} />
+                onMouseDown={props.onMouseDown}
+                onMouseEnter={props.onMouseEnter} />
         )}
         {props.data.map(itemData =>
             <Item
@@ -104,10 +103,9 @@ function Row(props: RowProps) {
                 startDate={props.startDate}
                 cellWidth={props.cellWidth}
                 selected={props.selectedItemIDs.includes(itemData.id)}
+                draft={itemData.id === props.draftID}
                 data={itemData}
-                onMouseDown={props.onMouseDown}
-                onSelectEvent={props.onSelectEvent}
-                onEditEvent={props.onEditEvent} />
+                onMouseDown={props.onMouseDown} />
         )}
     </div>
 }
@@ -118,6 +116,7 @@ type CellProps = {
     date: Date
     cellWidth: number
     onMouseDown: React.MouseEventHandler
+    onMouseEnter: React.MouseEventHandler
 }
 
 function Cell(props: CellProps) {
@@ -137,7 +136,8 @@ function Cell(props: CellProps) {
             data-row-index={props.rowIndex}
             className={isWeekend(props.date) ? "chart-cell--weekend" : "chart-cell"}
             style={cellStyle}
-            onMouseDown={props.onMouseDown}
+            onMouseDownCapture={props.onMouseDown}
+            onMouseEnter={props.onMouseEnter}
         />
     )
 }
@@ -148,45 +148,62 @@ type ItemProps = {
     cellWidth: number
     selected: boolean
     data: ExtendedEvent
+    draft: boolean
     onMouseDown: React.MouseEventHandler
-    onSelectEvent(id: string): any
-    onEditEvent(id: string): any
 }
 
 
 function Item(props: ItemProps) {
+    // treat [start, end] as inclusive interval
+    const widthInDays = differenceInDays(props.data.end, props.data.start) + 1
 
     const style: React.CSSProperties = {
         left: differenceInDays(props.data.start, props.startDate) * props.cellWidth,
-        // treat [start, end] as inclusive interval
-        width: (differenceInDays(props.data.end, props.data.start) + 1) * props.cellWidth,
+        width: widthInDays * props.cellWidth,
         backgroundColor: props.data.project ? props.data.project.color : "#999",
-        // border: props.selected ? "1px dashed white" : null,
     }
 
     const userStyle: React.CSSProperties = {
         background: props.data.user && props.data.user.color,
     }
 
-    const onEditEvent = () => props.onEditEvent(props.data.id)
-    const onSelectEvent = () => props.onSelectEvent(props.data.id)
+    const title = props.data.title + (props.data.description ? ("\n\n" + props.data.description) : "")
+    const dataAttribtes = idx => ({
+        "data-itemid": props.data.id,
+        "data-row-index": props.rowIndex,
+        "data-date": addDays(props.data.start, idx),
+    })
 
     return (
         <div
-            className="chart-item"
+            className={props.draft ? "chart-item--draft" : "chart-item"}
             style={style}
-            data-itemid={props.data.id}
-            data-row-index={props.rowIndex}
+            title={title}
             onMouseDown={props.onMouseDown}
-            onDoubleClick={onEditEvent}
-            onClick={onSelectEvent}
         >
-            <div className="chart-item__handle" data-handle="left" style={{ left: 0 }}></div>
+            <div
+                className="chart-item__handle"
+                style={{ left: 0 }}
+                data-handle="left"
+                {...dataAttribtes(0)} />
             <span className="chart-item__title">{props.data.title}</span>
+            <div
+                className="chart-item__handle"
+                style={{ right: 0 }}
+                data-handle="right"
+                {...dataAttribtes(widthInDays)} />
             {props.data.user &&
                 <span className="chart-item__user" style={userStyle}>{props.data.user.name}</span>
             }
-            <div className="chart-item__handle" data-handle="right" style={{ right: 0 }}></div>
+            <div style={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0, display: "flex" }}>
+                {new Array(differenceInDays(props.data.end, props.data.start) + 1).fill(0).map((_, idx) =>
+                    <div
+                        key={props.data.id + idx}
+                        style={{ width: props.cellWidth }}
+                        {...dataAttribtes(idx)}
+                    />
+                )}
+            </div>
         </div>
     )
 }

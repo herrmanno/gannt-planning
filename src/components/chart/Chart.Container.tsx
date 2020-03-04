@@ -1,5 +1,5 @@
 import { ReduxContainer } from "react-class-container"
-import { startOfWeek, addDays, isWithinInterval } from "date-fns"
+import { startOfWeek, addDays, isWithinInterval, differenceInDays } from "date-fns"
 import Chart from "./Chart"
 import buildData from "../../util/buildData"
 import ReduxState from "../../redux/State"
@@ -29,6 +29,7 @@ type State = {
         startX: number
         handle?: "left" | "right"
         startDate?: Date
+        startDateOffset?: number
         newItem: boolean
     }
 }
@@ -40,96 +41,86 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
         selectedItemIDs: [],
     }
 
-    onMouseDown = (e: React.DragEvent) => {
+    onMouseDown = (e: React.MouseEvent) => {
         if (e.button === 0 /* left button */) {
-            const { cellWidth } = this.store.getState().ui
-            const id = (e.currentTarget as HTMLElement).dataset["itemid"]
-            const handle = (e.target as HTMLElement).dataset["handle"] as any
+            const { events } = this.store.getState().data
+            const id = (e.target as HTMLElement).dataset["itemid"]
+            const startDate = new Date((e.target as HTMLElement).dataset["date"])
             this.setState({
                 dragging: {
-                    newItem: !id,
-                    rowIndex: +(e.currentTarget as HTMLElement).dataset["rowIndex"],
                     id,
-                    handle,
-                    startX: e.clientX + ((!id && handle === "right") ? cellWidth : 0),
-                    startDate: new Date((e.currentTarget as HTMLElement).dataset["date"]),
+                    startDate,
+                    startDateOffset: id ? differenceInDays(startDate, events[id].start) : null,
+                    startX: e.clientX,
+                    newItem: !id,
+                    rowIndex: +(e.target as HTMLElement).dataset["rowIndex"],
+                    handle: (e.target as HTMLElement).dataset["handle"] as any,
                 }
             })
 
-            document.addEventListener("mousemove", this.onMouseMove)
             document.addEventListener("mouseup", this.onMouseUp)
         }
     }
 
-    onMouseMove = async (e: MouseEvent) => {
-        const { cellWidth } = this.store.getState().ui
+    onMouseEnter = async (e: React.MouseEvent) => {
+        const { events } = this.store.getState().data
         const dragging = { ...this.state.dragging }
-        const xDiff = ~~((e.clientX - dragging!.startX) * 1.2 / cellWidth)
+        const date = new Date((e.currentTarget as HTMLElement).dataset["date"])
+        const xDiff = e.clientX - dragging!.startX
 
-        if (xDiff !== 0) {
+        if (dragging && dragging.startX) {
             if (!dragging.id) {
                 const onCreateEvent = this.props.onCreateEvent || ((ev) => ev)
                 const eventData = onCreateEvent({
                     start: dragging.startDate,
-                    end: addDays(dragging.startDate, 1),
+                    end: addDays(dragging.startDate, xDiff > 0 ? 1 : 0),
                 })
                 this.store.dispatch(createEvent(eventData, event => {
                     return new Promise(resolve => {
                         const { id } = event
                         this.setState(s => ({
                             dragging: {
-                                ...s.dragging, id, handle: xDiff > 0 ? "right" : "left"
+                                ...s.dragging,
+                                id,
+                                handle: xDiff > 0 ? "right" : "left"
                             }
                         }), resolve)
                     })
                 }))
             } else {
+                const event = events[dragging.id]
+                const xDrag = differenceInDays(date, event.start) - dragging.startDateOffset
                 if (!this.state.dragging.handle) {
-                    await this.store.dispatch(moveEventByID({ id: dragging.id, amount: xDiff }))
-                    this.setState({
-                        dragging: {
-                            ...dragging,
-                            startX: dragging.startX + xDiff * cellWidth
-                        },
-                    })
+                    await this.store.dispatch(moveEventByID({
+                        id: dragging.id,
+                        amount: xDrag
+                    }))
                 } else {
                     await this.store.dispatch(scaleEventByID({
                         id: dragging.id,
-                        amount: xDiff,
+                        amount: dragging.handle === "right"
+                            ? differenceInDays(date, event.end)
+                            : differenceInDays(date, event.start),
                         direction: dragging.handle
                     }))
-                    this.setState({
-                        dragging: {
-                            ...dragging,
-                            startX: dragging.startX + xDiff * cellWidth
-                        },
-                    })
                 }
             }
         }
     }
 
-    onMouseUp = () => {
+    onMouseUp = (e: MouseEvent) => {
+        const movedX = Math.abs(e.clientX - this.state.dragging.startX)
+
         if (this.state.dragging && this.state.dragging.newItem && this.state.dragging.id) {
-            this.onEditEvent(this.state.dragging.id)
+            this.store.dispatch(selectEvent(this.state.dragging.id))
+        } else if (this.state.dragging && this.state.dragging.id && movedX < 5) {
+            this.store.dispatch(selectEvent(this.state.dragging.id))
         }
         this.setState({
             dragging: null,
         })
 
-        document.removeEventListener("mousemove", this.onMouseMove)
         document.removeEventListener("mouseup", this.onMouseUp)
-    }
-
-    onSelectEvent = (id: string) => {
-        const { selectedEventID } = this.store.getState().ui
-        if (selectedEventID) {
-            this.store.dispatch(selectEvent(id))
-        }
-    }
-
-    onEditEvent = (id: string) => {
-        this.store.dispatch(selectEvent(id))
     }
 
     updateSelectedItems = () => {
@@ -159,6 +150,7 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
             cellWidth: reduxState.ui.cellWidth,
             rowHeight: reduxState.ui.rowHeight,
             parsedData: eventsArray,
+            draftID: state.dragging && state.dragging.id,
             data: buildData(
                 eventsArray,
                 state.dragging
@@ -166,8 +158,7 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
                     ? { id: state.dragging.id, row: state.dragging.rowIndex }
                     : undefined),
             onMouseDown: this.onMouseDown,
-            onSelectEvent: this.onSelectEvent,
-            onEditEvent: this.onEditEvent,
+            onMouseEnter: this.onMouseEnter,
         }
     }
 }

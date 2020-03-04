@@ -24,20 +24,22 @@ type Args = {
 
 function scaleEventByID(args: Args): any {
     return (dispatch: Function, getState: () => State) => {
-        const { id, amount, direction } = args
-        const { start, end, ...data } = getState().data.events[id]
+        if (args.amount !== 0) {
+            const { id, amount, direction } = args
+            const { start, end, ...data } = getState().data.events[id]
 
-        const event = {
-            ...data,
-            start: direction === "left" ? addDays(start, amount) : start,
-            end: direction === "right" ? addDays(end, amount) : end,
+            const event = {
+                ...data,
+                start: direction === "left" ? addDays(start, amount) : start,
+                end: direction === "right" ? addDays(end, amount) : end,
+            }
+
+            dispatch(addUndoActionByID(id))
+
+            dispatch({
+                type: SCALE_EVENT,
+                payload: { event }
+            } as ScaleEvent)
         }
-
-        dispatch(addUndoActionByID(id))
-
-        dispatch({
-            type: SCALE_EVENT,
-            payload: { event }
-        } as ScaleEvent)
     }
 }

@@ -25,6 +25,21 @@
   user-select: none;
   overflow: hidden;
   white-space: nowrap;
+  cursor: move;
+}
+
+.chart-item--draft {
+  @extend .chart-item;
+
+  pointer-events: none;
+  opacity: 0.5;
+  // mix-blend-mode: color;
+
+  & > .chart-item__title,
+  & > .chart-item__user,
+  & > .chart-item__handle {
+    display: none;
+  }
 }
 
 .chart-item__title {
@@ -42,14 +57,13 @@
 }
 
 .chart-item__handle {
-  // display: none;
-
   position: absolute;
   top: 0;
   bottom: 0;
   z-index: 2;
   width: 10px;
   background: rgba(0, 0, 0, 0.2);
+  cursor: ew-resize;
 
   &[data-handle="left"] {
     background: linear-gradient(
