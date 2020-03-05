@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "parcel watch index.html",
-    "build": "NODE_ENV=production parcel build --no-source-maps index.html"
+    "start": "NODE_ENV=development parcel watch index.html",
+    "build": "NODE_ENV=production parcel build --no-source-maps index.html",
+    "clean": "rm -rf .cache dist"
   },
   "keywords": [],
   "author": "",
