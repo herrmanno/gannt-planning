@@ -24,7 +24,7 @@ function commitEvents(): any {
             }
         })
 
-        await fetch(`${process.env.SERVER_URL}/api/events`, {
+        await fetch(`api/events`, {
             method: "PATCH",
             headers: { "content-type": "application/json" },
             body: JSON.stringify(changedEvents)

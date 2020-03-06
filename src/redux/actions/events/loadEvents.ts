@@ -21,7 +21,7 @@ function loadEvents(): any {
         const { startDate, numDays } = getState().ui
         const start = format(startDate, "yyyy-MM-dd")
         const end = format(addDays(startDate, numDays), "yyy-MM-dd")
-        const res = await fetch(`${process.env.SERVER_URL}/api/events?start=${start}&end=${end}`)
+        const res = await fetch(`api/events?start=${start}&end=${end}`)
         const events = await res.json()
 
         dispatch({

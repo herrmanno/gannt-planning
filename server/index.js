@@ -2,7 +2,12 @@
 const fs = require("fs");
 const path = require("path");
 const express = require("express");
+const dotenv = require("dotenv");
 const { parse, isWithinInterval } = require("date-fns");
+
+dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
+
+const { PORT = 8080 } = process.env;
 
 const app = express();
 
@@ -11,11 +16,11 @@ app.use(express.static("dist"));
 app.use(express.json());
 
 // @ts-ignore
-const events = require("./events.json");
+/**@type {any[]} */ const events = require("./events.json");
 // @ts-ignore
-const users = require("./users.json");
+/**@type {any[]} */ const users = require("./users.json");
 // @ts-ignore
-const projects = require("./projects");
+/**@type {any[]} */ const projects = require("./projects");
 
 /* timer for writing events to fs */
 let persistEvents = null;
@@ -85,4 +90,6 @@ app.get("/api/projects", (_, res) => {
   res.json(projects);
 });
 
-app.listen(8080);
+app.listen(PORT, () => {
+  console.info(`Started app on port ${PORT}`);
+});

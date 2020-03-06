@@ -16,7 +16,7 @@ interface LoadUsers extends Action {
 
 function loadUsers(): any {
     return async (dispatch: Function) => {
-        const res = await fetch(`${process.env.SERVER_URL}/api/users`)
+        const res = await fetch(`api/users`)
         const users = await res.json()
 
         dispatch({
