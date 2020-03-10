@@ -7,7 +7,7 @@ import Project from "../Project"
 type State = {
     data: {
         // TODO: refactor to { ids: string[], data: { [id: string]: Data } }
-        events: { [id: string]: (Event & { _state?: "new" | "modified" | "removed" }) }
+        events: { [id: string]: null | (Event & { _state?: "new" | "modified" | "removed" }) }
         users: { [id: string]: User }
         projects: { [id: string]: Project },
     }

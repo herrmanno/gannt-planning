@@ -33,7 +33,10 @@ function reducer(state = defaultState, action: Action): ReducerState {
     switch (action.type) {
         case "LOAD_EVENTS": {
             const parsedData = parseData(action.payload.events)
-            return parsedData.reduce((acc, item) => ({ ...acc, [item.id]: item }), {})
+            return parsedData.reduce((acc, item) => ({
+                ...acc,
+                [item.id]: (state[item.id] && state[item.id]?._state) ? state[item.id] : item
+            }), { ...state })
         }
         case "CREATE_EVENT": {
             return {
@@ -43,10 +46,10 @@ function reducer(state = defaultState, action: Action): ReducerState {
         }
         case "REMOVE_EVENT": {
             const { id } = action.payload
-            if (state[id]._state === "new") {
+            if (state[id]!._state === "new") {
                 return { ...state, [id]: null }
             } else {
-                return { ...state, [id]: updateEventState("removed")(state[id]) }
+                return { ...state, [id]: updateEventState("removed")(state[id]!) }
             }
         }
         case "PATCH_EVENT":
@@ -71,7 +74,7 @@ function reducer(state = defaultState, action: Action): ReducerState {
         }
         case "COMMIT_EVENTS": {
             return Object.keys(state)
-                .map(id => state[id])
+                .map(id => state[id]!)
                 .filter(Boolean)
                 .filter(event => event._state !== "removed")
                 .map(({ _state, ...event }) => event)
@@ -81,7 +84,7 @@ function reducer(state = defaultState, action: Action): ReducerState {
         case "REDO": {
             return {
                 ...state,
-                [action.payload.id]: action.payload.event
+                [action.payload.id]: action.payload.event || null
             }
         }
         default: return state
