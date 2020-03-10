@@ -4,26 +4,22 @@ const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
 const { parse, isWithinInterval } = require("date-fns");
+const initData = require("./initData");
 
 dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
 
-const { PORT = 8080 } = process.env;
+const { PORT = 8080, DATA_DIR = path.resolve(__dirname, "..", "data") } = process.env;
+
+const { events, users, projects } = initData();
+
+/* timer for writing events to fs */
+let persistEvents = null;
 
 const app = express();
 
 app.use(express.static(path.resolve(__dirname, "..", "dist")));
 
 app.use(express.json());
-
-// @ts-ignore
-/**@type {any[]} */ const events = require("./events.json");
-// @ts-ignore
-/**@type {any[]} */ const users = require("./users.json");
-// @ts-ignore
-/**@type {any[]} */ const projects = require("./projects");
-
-/* timer for writing events to fs */
-let persistEvents = null;
 
 app.use((_, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -74,7 +70,7 @@ app.patch("/api/events", (req, res) => {
 
   clearTimeout(persistEvents);
   persistEvents = setTimeout(() => {
-    fs.writeFile(path.resolve(__dirname, "events.json"), JSON.stringify(events), err => {
+    fs.writeFile(path.resolve(DATA_DIR, "events.json"), JSON.stringify(events, null, "\t"), err => {
       if (err) {
         console.log(err);
       }

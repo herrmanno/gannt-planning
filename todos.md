@@ -21,6 +21,7 @@
 - [?] Konzept für Rows von Events, vor allem beim Bewegen
 - [ ] Übersetzungen / i18n
 - [ ] Tooltips für Icons
+- [ ] Warnung beim Verlassen der Seite, wenn noch ungespeicherte Änderungen
 - [ ] NeDb für Backend nutzen
 - [ ] Zeilenhöhe anpassbar (Dann auch mehr Item-Daten inline anzeigen)
 - [ ] Sortierung für Rows (nach Anzahl, alphabetisch)
