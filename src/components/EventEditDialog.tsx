@@ -54,6 +54,8 @@ function EventEditDialog(props: Props) {
 
     const onDone = (e: React.MouseEvent) => props.onDone()
 
+    const { userID = "", projectID = "" } = props.event
+
     return (
         <form className="event-dialog" style={style} onSubmit={e => e.preventDefault()}>
             <button className="icon-button material-icons event-dialog__save-button" onClick={onDone} children="close" />
@@ -63,10 +65,10 @@ function EventEditDialog(props: Props) {
             <label className="event-dialog__label" children="Projekt" />
             <select
                 className="event-dialog__select"
-                value={props.event.projectID}
+                value={projectID}
                 onChange={onChangeProject}
             >
-                <option value={null}></option>
+                <option value={undefined}></option>
                 {props.projects.map(project =>
                     <option key={project.id} value={project.id} label={project.name} />
                 )}
@@ -75,10 +77,10 @@ function EventEditDialog(props: Props) {
             <label className="event-dialog__label" children="Besitzer" />
             <select
                 className="event-dialog__select"
-                value={props.event.userID}
+                value={userID}
                 onChange={onChangeUser}
             >
-                <option value={null}></option>
+                <option value={undefined}></option>
                 {props.users.map(user =>
                     <option key={user.id} value={user.id}>{user.name}</option>
                 )}

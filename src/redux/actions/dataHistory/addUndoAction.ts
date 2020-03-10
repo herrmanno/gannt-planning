@@ -12,12 +12,12 @@ interface AddUndoAction extends Action {
     type: typeof ADD_UNDO_ACTION
     payload: {
         id: string
-        event?: Event & { _state?: any }
+        event: null | Event & { _state?: any }
         date: number
     }
 }
 
-function addUndoAction(id: string, event?: Event & { _state?: any }): AddUndoAction {
+function addUndoAction(id: string, event: null | Event & { _state?: any }): AddUndoAction {
     return {
         type: ADD_UNDO_ACTION,
         payload: {

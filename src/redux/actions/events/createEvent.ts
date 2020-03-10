@@ -20,8 +20,8 @@ function createEvent(data: Partial<Event>, onCreate?: (event: Event) => any) {
     return async (dispatch: Function) => {
         const event: Event = {
             title: "Neues Event",
-            start: null,
-            end: null,
+            start: new Date(),
+            end: new Date(),
             ...data,
             id: uuid.v4(),
         }
