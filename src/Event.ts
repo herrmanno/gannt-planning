@@ -2,7 +2,7 @@ interface BaseEvent {
     id: string
     title: string
     description?: string
-    userID?: string
+    userIDs: string[]
     projectID?: string
 }
 

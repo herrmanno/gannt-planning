@@ -11,12 +11,12 @@ import Event from "../../Event"
 import selectExistingEvents from "../../redux/selectors/selectExistingEvents"
 import selectUsers from "../../redux/selectors/selectUsers"
 import selectProjects from "../../redux/selectors/selectProjects"
-import selectEvents from "../../redux/selectors/selectEvents"
 
 type Props = {
     title?: string
     filter?(data: Event): boolean
     onCreateEvent?(event: Partial<Event>): Partial<Event>
+    preferedUserID?: string
 }
 
 type State = {
@@ -45,15 +45,15 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
         if (e.button === 0 /* left button */) {
             const { events } = this.store.getState().data
             const id = (e.target as HTMLElement).dataset["itemid"]
-            const startDate = new Date((e.target as HTMLElement).dataset["date"])
+            const startDate = new Date((e.target as HTMLElement).dataset["date"]!)
             this.setState({
                 dragging: {
                     id,
                     startDate,
-                    startDateOffset: id ? differenceInDays(startDate, events[id].start) : null,
+                    startDateOffset: id ? differenceInDays(startDate, events[id]!.start) : undefined,
                     startX: e.clientX,
                     newItem: !id,
-                    rowIndex: +(e.target as HTMLElement).dataset["rowIndex"],
+                    rowIndex: +(e.target as HTMLElement).dataset["rowIndex"]!,
                     handle: (e.target as HTMLElement).dataset["handle"] as any,
                 }
             })
@@ -64,8 +64,8 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
 
     onMouseEnter = async (e: React.MouseEvent) => {
         const { events } = this.store.getState().data
-        const dragging = { ...this.state.dragging }
-        const date = new Date((e.currentTarget as HTMLElement).dataset["date"])
+        const dragging = { ...this.state.dragging! }
+        const date = new Date((e.currentTarget as HTMLElement).dataset["date"]!)
         const xDiff = e.clientX - dragging!.startX
 
         if (dragging && dragging.startX) {
@@ -73,14 +73,14 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
                 const onCreateEvent = this.props.onCreateEvent || ((ev) => ev)
                 const eventData = onCreateEvent({
                     start: dragging.startDate,
-                    end: addDays(dragging.startDate, xDiff > 0 ? 1 : 0),
+                    end: addDays(dragging.startDate!, xDiff > 0 ? 1 : 0),
                 })
                 this.store.dispatch(createEvent(eventData, event => {
                     return new Promise(resolve => {
                         const { id } = event
                         this.setState(s => ({
                             dragging: {
-                                ...s.dragging,
+                                ...s.dragging!,
                                 id,
                                 handle: xDiff > 0 ? "right" : "left"
                             }
@@ -88,9 +88,9 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
                     })
                 }))
             } else {
-                const event = events[dragging.id]
-                const xDrag = differenceInDays(date, event.start) - dragging.startDateOffset
-                if (!this.state.dragging.handle) {
+                const event = events[dragging.id]!
+                const xDrag = differenceInDays(date, event.start) - dragging.startDateOffset!
+                if (!dragging.handle) {
                     await this.store.dispatch(moveEventByID({
                         id: dragging.id,
                         amount: xDrag
@@ -109,7 +109,7 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
     }
 
     onMouseUp = (e: MouseEvent) => {
-        const movedX = Math.abs(e.clientX - this.state.dragging.startX)
+        const movedX = Math.abs(e.clientX - this.state.dragging!.startX)
 
         if (this.state.dragging && this.state.dragging.newItem && this.state.dragging.id) {
             this.store.dispatch(selectEvent(this.state.dragging.id))
@@ -117,19 +117,19 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
             this.store.dispatch(selectEvent(this.state.dragging.id))
         }
         this.setState({
-            dragging: null,
+            dragging: void 0,
         })
 
         document.removeEventListener("mouseup", this.onMouseUp)
     }
 
-    updateSelectedItems = () => {
-        const items = buildData(selectEvents(this.store.getState()))[this.state.cursorRow] || []
-        const ids = items
-            .filter(item => isWithinInterval(this.state.cursorDate, { start: item.start, end: addDays(item.end, -1) }))
-            .map(item => item.id)
-        this.setState({ selectedItemIDs: ids })
-    }
+    // updateSelectedItems = () => {
+    //     const items = buildData(selectExistingEvents(this.store.getState()))[this.state.cursorRow] || []
+    //     const ids = items
+    //         .filter(item => isWithinInterval(this.state.cursorDate, { start: item.start, end: addDays(item.end, -1) }))
+    //         .map(item => item.id)
+    //     this.setState({ selectedItemIDs: ids })
+    // }
 
     getChildProps(props: Props, state: State, reduxState: ReduxState) {
         const users = selectUsers(reduxState)
@@ -137,8 +137,8 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
         const eventsArray = selectExistingEvents(reduxState).filter(props.filter || Boolean).map(event => {
             return {
                 ...event,
-                project: event.projectID && projects.find(p => p.id === event.projectID),
-                user: event.userID && users.find(u => u.id === event.userID),
+                project: event.projectID ? projects.find(p => p.id === event.projectID) : undefined,
+                users: users.filter(u => event.userIDs.includes(u.id)),
             }
         })
 
@@ -154,8 +154,7 @@ export default class ChartContainer extends ReduxContainer(Chart)<ReduxState, Pr
             data: buildData(
                 eventsArray,
                 state.dragging
-                    // ? { id: state.dragging.id, row: getRowOfItem(state.dragging.id, this.lastChildProps.data) }
-                    ? { id: state.dragging.id, row: state.dragging.rowIndex }
+                    ? { id: state.dragging.id!, row: state.dragging.rowIndex }
                     : undefined),
             onMouseDown: this.onMouseDown,
             onMouseEnter: this.onMouseEnter,

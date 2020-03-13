@@ -3,12 +3,12 @@ import Event from "../Event"
 
 export default buildData
 
-function buildData<T extends Event>(data: T[], fixedItem: { id: string, row: number } = { id: null, row: null }): T[][] {
+function buildData<T extends Event>(data: T[], fixedItem: { id?: string, row?: number } = { id: void 0, row: void 0 }): T[][] {
     const rows = data
         .sort((a, b) => compareAsc(a.start, b.start))
         .reduce((acc, item) => {
             const rowIndexToInsert = acc.findIndex((row, idx) => {
-                const intervals = [
+                const intervals: any[] = [
                     ...row,
                     (
                         fixedItem &&

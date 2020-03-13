@@ -8,7 +8,7 @@ import "./Chart.scss"
 type ExtendedEvent =
     Event & {
         project?: Project
-        user?: User
+        users?: User[]
     }
 
 type Props = {
@@ -73,8 +73,8 @@ type RowProps = {
     data: ExtendedEvent[]
     selectedItemIDs: string[]
     draftID?: string
-    onMouseDown?: React.MouseEventHandler
-    onMouseEnter?: React.MouseEventHandler
+    onMouseDown: React.MouseEventHandler
+    onMouseEnter: React.MouseEventHandler
 }
 
 function Row(props: RowProps) {
@@ -169,10 +169,6 @@ function Item(props: ItemProps) {
         backgroundColor: props.data.project ? props.data.project.color : "#999",
     }
 
-    const userStyle: React.CSSProperties = {
-        background: props.data.user && props.data.user.color,
-    }
-
     const title = props.data.title + (props.data.description ? ("\n\n" + props.data.description) : "")
     const dataAttribtes = idx => ({
         "data-itemid": props.data.id,
@@ -202,8 +198,16 @@ function Item(props: ItemProps) {
                 style={{ right: 0 }}
                 data-handle="right"
                 {...dataAttribtes(widthInDays)} />
-            {props.data.user &&
-                <span className="chart-item__user" style={userStyle}>{props.data.user.name}</span>
+            {props.data.users && props.data.users.length > 0 &&
+                <div className="chart-item__users">
+                    {props.data.users.map(u =>
+                        <span
+                            key={u.id}
+                            className="chart-item__user"
+                            style={{ background: u.color }}
+                            children={u.name} />
+                    )}
+                </div>
             }
             <div style={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0, display: "flex" }}>
                 {new Array(differenceInDays(props.data.end, props.data.start) + 1).fill(0).map((_, idx) =>

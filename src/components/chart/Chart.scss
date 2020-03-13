@@ -45,14 +45,22 @@
   padding-left: 8px;
 }
 
-.chart-item__user {
+.chart-item__users {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding-left: 10px;
-  display: inline-block;
+  display: inline-flex;
   font-size: 0.6rem;
+}
+
+.chart-item__user {
+  padding: 0px 2px;
+  flex: 1;
+
+  &:first-of-type {
+    padding-left: 8px;
+  }
 }
 
 .chart-item__handle {

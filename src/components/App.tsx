@@ -26,7 +26,7 @@ type Props = {
 function App(props: Props) {
     const sortByName = (a, b) => a.name.localeCompare(b.name)
 
-    const filterByUser = (user: User) => (event: Event) => user.id === event.userID
+    const filterByUser = (user: User) => (event: Event) => event.userIDs.includes(user.id)
 
     const filterByProject = (project: Project) => (event: Event) => project.id === event.projectID
 
@@ -63,7 +63,8 @@ function App(props: Props) {
                                 key={u.id}
                                 title={u.name}
                                 filter={filterByUser(u)}
-                                onCreateEvent={e => ({ ...e, userID: u.id })} />
+                                preferedUserID={u.id}
+                                onCreateEvent={e => ({ ...e, userIDs: [u.id] })} />
                         )
                     }
                 </div>

@@ -62,3 +62,44 @@ main {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
+
+@keyframes fadeout {
+  0% {
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  99% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0;
+    display: none;
+  }
+}
+
+.error-notification {
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  height: 80px;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+
+  background-color: #ffcfca;
+  box-shadow: 10px 10px 10px #c78a6e59;
+  color: #b51a1a;
+  font-size: 1rem;
+  font-weight: bold;
+  animation: fadeout 5s forwards;
+}

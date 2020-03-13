@@ -22,6 +22,7 @@ function createEvent(data: Partial<Event>, onCreate?: (event: Event) => any) {
             title: "Neues Event",
             start: new Date(),
             end: new Date(),
+            userIDs: [],
             ...data,
             id: uuid.v4(),
         }

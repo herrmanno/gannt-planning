@@ -1,4 +1,5 @@
 import * as React from "react"
+import MultiSelect from "./MultiSelect"
 import Event from "../Event"
 import { format, parse, isValid } from "date-fns"
 import User from "../User"
@@ -28,22 +29,22 @@ function EventEditDialog(props: Props) {
         boxShadow: "0px 0px 10px 10px rgba(0,0,0,.2)",
     }
 
-    const onChangeTitle = e => props.onChangeEvent({ title: e.currentTarget.value })
+    const onChangeTitle = (e: any) => props.onChangeEvent({ title: e.currentTarget.value })
 
-    const onChangeDescription = e => props.onChangeEvent({ description: e.currentTarget.value })
+    const onChangeDescription = (e: any) => props.onChangeEvent({ description: e.currentTarget.value })
 
-    const onChangeUser = e => props.onChangeEvent({ userID: e.currentTarget.value })
+    const onChangeUser = (userIDs: string[]) => props.onChangeEvent({ userIDs })
 
-    const onChangeProject = e => props.onChangeEvent({ projectID: e.currentTarget.value })
+    const onChangeProject = (e: any) => props.onChangeEvent({ projectID: e.currentTarget.value })
 
-    const onChangeStart = e => {
+    const onChangeStart = (e: any) => {
         const start = parse(e.currentTarget.value, "yyyy-MM-dd", 0)
         if (isValid(start) && start < props.event.end) {
             props.onChangeEvent({ start })
         }
     }
 
-    const onChangeEnd = e => {
+    const onChangeEnd = (e: any) => {
         const end = parse(e.currentTarget.value, "yyyy-MM-dd", 0)
         if (isValid(end) && end > props.event.start) {
             props.onChangeEvent({ end })
@@ -52,9 +53,9 @@ function EventEditDialog(props: Props) {
 
     const onRemove = () => props.onRemoveEvent(props.event.id)
 
-    const onDone = (e: React.MouseEvent) => props.onDone()
+    const onDone = () => props.onDone()
 
-    const { userID = "", projectID = "" } = props.event
+    const { userIDs, projectID = "" } = props.event
 
     return (
         <form className="event-dialog" style={style} onSubmit={e => e.preventDefault()}>
@@ -75,17 +76,8 @@ function EventEditDialog(props: Props) {
             </select>
             <br />
             <label className="event-dialog__label" children="Besitzer" />
-            <select
-                className="event-dialog__select"
-                value={userID}
-                onChange={onChangeUser}
-            >
-                <option value={undefined}></option>
-                {props.users.map(user =>
-                    <option key={user.id} value={user.id}>{user.name}</option>
-                )}
-            </select>
-            <br />
+            <MultiSelect value={userIDs} options={props.users} onChange={onChangeUser} />
+            < br />
             <label className="event-dialog__label" children="Start" />
             <input
                 className="event-dialog__input"
@@ -108,6 +100,6 @@ function EventEditDialog(props: Props) {
                 onChange={onChangeDescription} />
             <br />
             <button className="event-dialog__remove-button" onClick={onRemove} children="Löschen" />
-        </form>
+        </form >
     )
 }
