@@ -44,7 +44,7 @@ export default class ControlBarContainer extends ReduxContainer(ControlBar)<Redu
     }
 
     onResetView = async () => {
-        const numDays = 28
+        const numDays = ~~(document.body.clientWidth / 350) * 7
         await this.store.dispatch(setNumDays(() => numDays))
         await this.store.dispatch(setStartDate(() =>
             startOfWeek(addWeeks(new Date(), -1), { weekStartsOn: 1 }))

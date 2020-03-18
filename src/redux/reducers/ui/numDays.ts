@@ -6,7 +6,7 @@ export default reducer
 
 type ReducerState = State["ui"]["numDays"]
 type Action = SetNumDays
-const defaultState: ReducerState = 28
+const defaultState: ReducerState = ~~(document.body.clientWidth / 350) * 7
 
 
 function reducer(state = defaultState, action: Action): ReducerState {

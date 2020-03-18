@@ -13,20 +13,14 @@ export default class KeyHandler extends ReduxContainer(() => null)<ReduxState> {
         window.removeEventListener("resize", this.onResize)
     }
 
-    onResizeTimer = null
+    onResizeTimer: any = null
 
     onResize = () => {
         clearTimeout(this.onResizeTimer)
         this.onResizeTimer = setTimeout(() => {
-            const { cellWidth, numDays } = this.store.getState().ui
-            const oldWidth = cellWidth * numDays
-            const newWidth = document.body.clientWidth
-            const widthDiff = oldWidth - newWidth
-            const oldWeekWidth = cellWidth * 7
-            const newNumDays = numDays - 7 * ~~(widthDiff / oldWeekWidth)
-
-            this.store.dispatch(setNumDays(() => newNumDays))
-            this.store.dispatch(setCellWidth(document.body.clientWidth / newNumDays))
+            const numDays = 7 * ~~(document.body.clientWidth / 350)
+            this.store.dispatch(setNumDays(() => numDays))
+            this.store.dispatch(setCellWidth(document.body.clientWidth / numDays))
         }, 500)
     }
 }
