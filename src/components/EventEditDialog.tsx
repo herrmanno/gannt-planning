@@ -18,17 +18,6 @@ type Props = {
 }
 
 function EventEditDialog(props: Props) {
-    const style: React.CSSProperties = {
-        position: "absolute",
-        top: "0",
-        right: "0%",
-        bottom: "00%",
-        width: "300px",
-        zIndex: 3,
-        background: "white",
-        boxShadow: "0px 0px 10px 10px rgba(0,0,0,.2)",
-    }
-
     const onChangeTitle = (e: any) => props.onChangeEvent({ title: e.currentTarget.value })
 
     const onChangeDescription = (e: any) => props.onChangeEvent({ description: e.currentTarget.value })
@@ -58,7 +47,7 @@ function EventEditDialog(props: Props) {
     const { userIDs, projectID = "" } = props.event
 
     return (
-        <form className="event-dialog" style={style} onSubmit={e => e.preventDefault()}>
+        <form className="event-dialog" onSubmit={e => e.preventDefault()}>
             <button className="icon-button material-icons event-dialog__save-button" onClick={onDone} children="close" />
             <label className="event-dialog__label" children="Name" />
             <input className="event-dialog__title-input" autoFocus value={props.event.title} onChange={onChangeTitle} />

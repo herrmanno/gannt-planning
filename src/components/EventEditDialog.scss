@@ -1,7 +1,17 @@
 .event-dialog {
-  position: relative;
+  position: fixed;
+  top: 50px; /* header height */
+  right: 0%;
+  bottom: 0%;
+  width: 300px;
+  height: calc(100vh - 50px /* header height */);
+  z-index: 3;
+  overflow: auto;
+
   padding: 14px;
   padding-top: 32px;
+  background: white;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 10px 10px;
 }
 
 .event-dialog__save-button {

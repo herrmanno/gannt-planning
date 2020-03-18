@@ -68,10 +68,11 @@ function App(props: Props) {
                         )
                     }
                 </div>
-                {props.selectedEventID &&
-                    <EventEditDialog eventID={props.selectedEventID} />
-                }
             </div>
+            {props.selectedEventID &&
+                <EventEditDialog eventID={props.selectedEventID} />
+            }
+            {props.error && <div className="error-notification">Da ist wohl etwas schiefgelaufen…</div>}
             <KeyHandler />
             <ResizeHandler />
             <AutoSaver />
