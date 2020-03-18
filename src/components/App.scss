@@ -4,6 +4,18 @@
   align-items: center;
   padding: 0.5rem;
   background-color: teal;
+
+  & > * {
+    flex: 1;
+  }
+
+  & > *:first-child {
+    justify-content: flex-start;
+  }
+
+  & > *:last-child {
+    justify-content: flex-end;
+  }
 }
 
 .header__heading {
