@@ -7,6 +7,23 @@
   background: #c4d1d6;
 }
 
+@keyframes cursor {
+  0% {
+    cursor: grab;
+  }
+  30% {
+    cursor: grabbing;
+  }
+  70% {
+    cursor: move;
+  }
+}
+
+.chart-cell:hover {
+  animation: cursor 2s;
+  cursor: move;
+}
+
 .chart-cell:not(:last-child) {
   border-right: 1px solid #b0b8c3;
 }
