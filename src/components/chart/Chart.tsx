@@ -105,7 +105,8 @@ function Row(props: RowProps) {
                 selected={props.selectedItemIDs.includes(itemData.id)}
                 draft={itemData.id === props.draftID}
                 data={itemData}
-                onMouseDown={props.onMouseDown} />
+                onMouseDown={props.onMouseDown}
+                onMouseEnter={props.onMouseEnter} />
         )}
     </div>
 }
@@ -156,6 +157,7 @@ type ItemProps = {
     data: ExtendedEvent
     draft: boolean
     onMouseDown: React.MouseEventHandler
+    onMouseEnter: React.MouseEventHandler
 }
 
 
@@ -174,6 +176,7 @@ function Item(props: ItemProps) {
         "data-itemid": props.data.id,
         "data-row-index": props.rowIndex,
         "data-date": addDays(props.data.start, idx),
+        onMouseEnter: props.onMouseEnter,
     })
     const className = [
         "chart-item",
