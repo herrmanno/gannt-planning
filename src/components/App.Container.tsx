@@ -10,6 +10,8 @@ import selectProjects from "../redux/selectors/selectProjects"
 
 export default class AppContainer extends ReduxContainer(App)<ReduxState> {
 
+    state = { error: null }
+
     componentDidMount() {
         const { numDays } = this.store.getState().ui
         this.store.dispatch(setCellWidth(document.body.clientWidth / numDays))
@@ -18,8 +20,24 @@ export default class AppContainer extends ReduxContainer(App)<ReduxState> {
         this.store.dispatch(loadProject())
     }
 
-    getChildProps(_props: any, _state: any, reduxState: ReduxState) {
+    static getDerivedStateFromError(error) {
+        return { error }
+    }
+
+    componentDidCatch(error, errorInfo) {
+        console.error(error)
+        console.error(errorInfo)
+        setTimeout(() => {
+            debugger
+            if (this.state.error === error) {
+                this.setState({ error: null })
+            }
+        }, 6_000)
+    }
+
+    getChildProps(_props: any, state: any, reduxState: ReduxState) {
         return {
+            error: state.error,
             users: selectUsers(reduxState),
             projects: selectProjects(reduxState),
             selectedEventID: reduxState.ui.selectedEventID,

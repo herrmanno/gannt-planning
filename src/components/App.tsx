@@ -21,6 +21,7 @@ type Props = {
     projects: Project[]
     selectedEventID?: string
     additionalLaneCategory: string
+    error?: string
 }
 
 function App(props: Props) {
