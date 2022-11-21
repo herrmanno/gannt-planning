@@ -1,5 +1,7 @@
 # Gannt chart planning
 
+![screenshot](./screenshot.png)
+
 ## Install
 
 `npm i`
